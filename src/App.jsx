@@ -437,6 +437,42 @@ export default function App() {
           osc.start(now + idx * 0.12);
           osc.stop(now + idx * 0.12 + 2.6);
         });
+
+        // 10-second Crowd Clapping / Cheering Effect
+        const clapBuf = actx.createBuffer(1, Math.floor(actx.sampleRate * 10), actx.sampleRate);
+        const clapData = clapBuf.getChannelData(0);
+        for (let i = 0; i < clapData.length; i++) {
+          clapData[i] = (Math.random() * 2 - 1); // White noise
+        }
+        const clapSrc = actx.createBufferSource();
+        clapSrc.buffer = clapBuf;
+        
+        const clapFil = actx.createBiquadFilter();
+        clapFil.type = 'bandpass';
+        clapFil.frequency.value = 1200;
+        clapFil.Q.value = 0.8;
+        
+        const clapGain = actx.createGain();
+        clapGain.gain.setValueAtTime(0, now);
+        
+        // Base cheer volume swell
+        clapGain.gain.linearRampToValueAtTime(0.1, now + 1);
+        clapGain.gain.linearRampToValueAtTime(0.15, now + 2);
+        clapGain.gain.linearRampToValueAtTime(0.15, now + 8);
+        clapGain.gain.linearRampToValueAtTime(0.001, now + 10);
+
+        // Add 250 random individual "claps" (bursts of noise)
+        for(let j = 0; j < 250; j++) {
+           const time = now + Math.random() * 9.5;
+           clapGain.gain.setTargetAtTime(0.4, time, 0.005);
+           clapGain.gain.setTargetAtTime(0.15, time + 0.02, 0.03);
+        }
+        
+        clapSrc.connect(clapFil);
+        clapFil.connect(clapGain);
+        clapGain.connect(actx.destination);
+        clapSrc.start(now);
+        clapSrc.stop(now + 10);
       }
     } catch (_) {}
 
