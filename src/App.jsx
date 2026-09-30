@@ -970,14 +970,14 @@ export default function App() {
             A New Chapter in <span className="italic text-amber-700 drop-shadow-[0_2px_12px_rgba(245,158,11,0.28)]">Scholarly Research</span>
           </h1>
 
-          {/* IJSPAST Full Name Badge */}
+          {/* IJMAR Full Name Badge */}
           <div className="premium-pill mt-2 sm:mt-3 px-3.5 sm:px-5 py-1.5 rounded-full flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
             <span className="text-xs sm:text-sm md:text-base font-black tracking-widest text-amber-950 font-serif-academic drop-shadow-sm">
-              IJSPAST
+              IJMAR
             </span>
             <span className="text-amber-700 font-bold hidden sm:inline">•</span>
             <span className="text-[11px] sm:text-xs md:text-sm font-bold text-amber-950 tracking-wide font-sans">
-              International Journal of Scientific Progress in Applied Science &amp; Technology
+              International Journal of Multidisciplinary Advanced Research
             </span>
           </div>
         </div>
@@ -985,7 +985,7 @@ export default function App() {
         {/* Description Text & Key Highlights */}
         <div data-animate="subtitle" className="my-0.5 flex flex-col items-center gap-1">
           <p className="text-xs sm:text-sm md:text-base font-medium text-slate-800 tracking-[0.02em] normal-case max-w-2xl font-sans leading-snug drop-shadow-sm luxury-subheading">
-            Creating a global platform for innovative research and meaningful academic dialogue across science, engineering, and technology.
+            Creating a global platform for innovative research and meaningful academic dialogue across multidisciplinary advanced research.
           </p>
 
           {/* Academic Highlight Pills */}
@@ -1114,7 +1114,7 @@ export default function App() {
               </div>
               <div className="flex flex-wrap items-center justify-center gap-2.5">
                 <a
-                  href={JOURNAL_INFO.portalUrl || "https://srmu-journal.netlify.app/"}
+                  href={JOURNAL_INFO.portalUrl || "https://srmu-journal-new.netlify.app/"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="premium-button px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all inline-flex items-center gap-2 shadow-lg shadow-amber-500/30 hover:scale-[1.02]"

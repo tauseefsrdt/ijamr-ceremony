@@ -1,8 +1,8 @@
 export const JOURNAL_INFO = {
-  name: "IJSPAST",
-  fullName: "International Journal of Scientific Progress in Applied Science & Technology",
+  name: "IJMAR",
+  fullName: "International Journal of Multidisciplinary Advanced Research",
   publisher: "Shri Ramswaroop Memorial University (SRMU)",
-  portalUrl: "https://srmu-journal.netlify.app/",
+  portalUrl: "https://srmu-journal-new.netlify.app/",
   inauguration: {
     date: "01 January 2026",
     time: "To Be Announced",

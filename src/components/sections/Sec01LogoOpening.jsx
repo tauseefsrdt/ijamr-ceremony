@@ -91,7 +91,7 @@ export default function Sec01LogoOpening({ isActive }) {
         >
           <img 
             src="/logo.png" 
-            alt="IJSPAST Official Logo" 
+            alt="IJMAR Official Logo" 
             className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
           />
         </div>
