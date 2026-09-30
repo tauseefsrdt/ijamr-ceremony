@@ -533,85 +533,160 @@ export default function App() {
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a1526] text-slate-900 select-none"
       style={{ minHeight: '100svh' }}
     >
-      {/* ══ FULL-SCREEN RED VELVET CURTAIN (PARDA) ══ */}
+      {/* ══ PREMIUM RED VELVET CURTAIN (PARDA) ══ */}
       {!curtainOpen && (
-        <div className="absolute inset-0 z-50 pointer-events-none flex" aria-hidden="true">
+        <div className="absolute inset-0 z-50 pointer-events-none" aria-hidden="true">
 
-          {/* Top Pelmet / Valance bar */}
-          <div className="absolute top-0 left-0 right-0 z-10 h-10 sm:h-14" style={{
-            background: 'linear-gradient(180deg, #6b0010 0%, #8b0016 60%, #a50019 100%)',
-            borderBottom: '4px solid #f59e0b',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.6), 0 2px 0 rgba(255,200,0,0.3) inset'
+          {/* ── ORNATE PELMET / VALANCE BAR ── */}
+          <div className="absolute top-0 left-0 right-0 z-20" style={{
+            height: '72px',
+            background: 'linear-gradient(180deg, #3d0008 0%, #7a000f 30%, #a0001a 65%, #c20020 100%)',
+            borderBottom: '5px solid #f59e0b',
+            boxShadow: '0 6px 30px rgba(0,0,0,0.7), 0 2px 0 rgba(255,220,80,0.4) inset, 0 -2px 0 rgba(0,0,0,0.5) inset'
           }}>
-            {/* Pelmet gold trim decoration */}
-            <div className="absolute inset-x-0 bottom-0 flex justify-between px-6 sm:px-12">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="w-4 h-4 sm:w-5 sm:h-5 rounded-full" style={{
-                  background: 'radial-gradient(circle at 35% 35%, #fef08a, #d97706)',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.5)'
-                }} />
+            {/* Pelmet inner gold band */}
+            <div className="absolute bottom-5 left-0 right-0 h-[2px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(251,191,36,0.6), rgba(255,240,120,0.9), rgba(251,191,36,0.6), transparent)' }} />
+            {/* Hanging tassels */}
+            <div className="absolute bottom-0 left-0 right-0 flex justify-around px-8 translate-y-full">
+              {Array.from({ length: 14 }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center">
+                  <div className="w-[3px] bg-amber-400" style={{ height: `${20 + (i % 3) * 8}px`, opacity: 0.85 }} />
+                  <div className="w-3 h-3 rounded-full" style={{
+                    background: 'radial-gradient(circle at 35% 30%, #fef08a, #b45309)',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.6)'
+                  }} />
+                </div>
               ))}
             </div>
           </div>
 
-          {/* LEFT curtain panel */}
+          {/* ── LEFT CURTAIN PANEL ── */}
           <div
             ref={curtainLeftRef}
-            className="absolute top-0 left-0 bottom-0 w-1/2 origin-left"
-            style={{
-              background: 'linear-gradient(180deg, #8b0016 0%, #6b0010 30%, #a50019 60%, #6b0010 80%, #8b0016 100%)',
-              backgroundImage: [
-                'linear-gradient(90deg, rgba(0,0,0,0.35) 0%, transparent 8%, rgba(255,255,255,0.04) 15%, transparent 22%, rgba(0,0,0,0.25) 35%, transparent 44%, rgba(255,255,255,0.03) 52%, transparent 60%, rgba(0,0,0,0.3) 75%, transparent 85%, rgba(0,0,0,0.2) 100%)',
-                'linear-gradient(180deg, #8b0016 0%, #6b0010 30%, #a50019 60%, #6b0010 80%, #8b0016 100%)'
-              ].join(', '),
-              borderRight: '3px solid rgba(251,191,36,0.55)',
-              boxShadow: '6px 0 40px rgba(0,0,0,0.55), inset -3px 0 20px rgba(0,0,0,0.4)'
-            }}
+            className="absolute left-0 bottom-0 w-1/2"
+            style={{ top: '0px' }}
           >
-            {/* Fabric fold lines */}
-            {[12, 28, 44, 62, 78].map((pct, i) => (
-              <div key={i} className="absolute top-0 bottom-0" style={{
-                left: `${pct}%`,
-                width: '2px',
-                background: `rgba(0,0,0,${0.15 + i * 0.04})`,
-                filter: 'blur(1px)'
-              }} />
-            ))}
-            {/* Gold fringe at right edge */}
-            <div className="absolute top-10 sm:top-14 right-0 bottom-0 w-3" style={{
-              background: 'repeating-linear-gradient(180deg, #f59e0b 0px, #d97706 4px, #f59e0b 8px, transparent 8px, transparent 12px)',
-              opacity: 0.7
+            {/* Main velvet fabric */}
+            <div className="absolute inset-0" style={{
+              background: [
+                'linear-gradient(90deg,',
+                '  rgba(0,0,0,0.55) 0%,',
+                '  rgba(180,0,20,0.0) 6%,',
+                '  rgba(255,255,255,0.07) 12%,',
+                '  rgba(0,0,0,0.0) 18%,',
+                '  rgba(0,0,0,0.4) 26%,',
+                '  rgba(255,255,255,0.05) 34%,',
+                '  rgba(0,0,0,0.0) 40%,',
+                '  rgba(0,0,0,0.35) 50%,',
+                '  rgba(255,255,255,0.04) 60%,',
+                '  rgba(0,0,0,0.0) 68%,',
+                '  rgba(0,0,0,0.3) 80%,',
+                '  rgba(0,0,0,0.45) 100%',
+                ')'
+              ].join(''),
+              backgroundColor: '#8b0016'
+            }} />
+            {/* Velvet sheen overlay */}
+            <div className="absolute inset-0" style={{
+              background: 'linear-gradient(170deg, rgba(200,0,30,0.6) 0%, rgba(100,0,15,0.8) 40%, rgba(160,0,25,0.5) 70%, rgba(80,0,12,0.9) 100%)'
+            }} />
+            {/* Right edge gold border + inner shadow */}
+            <div className="absolute top-0 right-0 bottom-0 w-[5px]" style={{
+              background: 'linear-gradient(180deg, #fef08a, #f59e0b, #d97706, #f59e0b, #fef08a)',
+              boxShadow: '0 0 12px rgba(251,191,36,0.7)'
+            }} />
+            {/* Hanging gold fringe */}
+            <div className="absolute top-[72px] right-0 bottom-0 w-4 flex flex-col" style={{ gap: 0 }}>
+              {Array.from({ length: 60 }).map((_, i) => (
+                <div key={i} style={{
+                  height: '16px',
+                  width: `${6 + Math.sin(i * 0.9) * 4}px`,
+                  background: i % 2 === 0 ? '#f59e0b' : '#d97706',
+                  opacity: 0.75,
+                  borderRadius: '0 0 3px 3px'
+                }} />
+              ))}
+            </div>
+            {/* Deep inner shadow on right edge */}
+            <div className="absolute top-0 right-0 bottom-0 w-16" style={{
+              background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.5))'
             }} />
           </div>
 
-          {/* RIGHT curtain panel */}
+          {/* ── RIGHT CURTAIN PANEL ── */}
           <div
             ref={curtainRightRef}
-            className="absolute top-0 right-0 bottom-0 w-1/2 origin-right"
-            style={{
-              background: 'linear-gradient(180deg, #8b0016 0%, #6b0010 30%, #a50019 60%, #6b0010 80%, #8b0016 100%)',
-              backgroundImage: [
-                'linear-gradient(90deg, rgba(0,0,0,0.2) 0%, transparent 15%, rgba(0,0,0,0.25) 28%, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 58%, rgba(0,0,0,0.3) 70%, transparent 82%, rgba(0,0,0,0.35) 100%)',
-                'linear-gradient(180deg, #8b0016 0%, #6b0010 30%, #a50019 60%, #6b0010 80%, #8b0016 100%)'
-              ].join(', '),
-              borderLeft: '3px solid rgba(251,191,36,0.55)',
-              boxShadow: '-6px 0 40px rgba(0,0,0,0.55), inset 3px 0 20px rgba(0,0,0,0.4)'
-            }}
+            className="absolute right-0 bottom-0 w-1/2"
+            style={{ top: '0px' }}
           >
-            {/* Fabric fold lines */}
-            {[18, 35, 52, 70, 88].map((pct, i) => (
-              <div key={i} className="absolute top-0 bottom-0" style={{
-                left: `${pct}%`,
-                width: '2px',
-                background: `rgba(0,0,0,${0.12 + i * 0.04})`,
-                filter: 'blur(1px)'
-              }} />
-            ))}
-            {/* Gold fringe at left edge */}
-            <div className="absolute top-10 sm:top-14 left-0 bottom-0 w-3" style={{
-              background: 'repeating-linear-gradient(180deg, #f59e0b 0px, #d97706 4px, #f59e0b 8px, transparent 8px, transparent 12px)',
-              opacity: 0.7
+            {/* Main velvet fabric */}
+            <div className="absolute inset-0" style={{
+              background: [
+                'linear-gradient(90deg,',
+                '  rgba(0,0,0,0.45) 0%,',
+                '  rgba(0,0,0,0.0) 18%,',
+                '  rgba(255,255,255,0.05) 25%,',
+                '  rgba(0,0,0,0.0) 33%,',
+                '  rgba(0,0,0,0.35) 44%,',
+                '  rgba(255,255,255,0.04) 54%,',
+                '  rgba(0,0,0,0.0) 62%,',
+                '  rgba(0,0,0,0.4) 75%,',
+                '  rgba(255,255,255,0.06) 85%,',
+                '  rgba(0,0,0,0.55) 100%',
+                ')'
+              ].join(''),
+              backgroundColor: '#8b0016'
             }} />
+            {/* Velvet sheen overlay */}
+            <div className="absolute inset-0" style={{
+              background: 'linear-gradient(170deg, rgba(80,0,12,0.9) 0%, rgba(160,0,25,0.5) 35%, rgba(100,0,15,0.8) 65%, rgba(200,0,30,0.55) 100%)'
+            }} />
+            {/* Left edge gold border */}
+            <div className="absolute top-0 left-0 bottom-0 w-[5px]" style={{
+              background: 'linear-gradient(180deg, #fef08a, #f59e0b, #d97706, #f59e0b, #fef08a)',
+              boxShadow: '0 0 12px rgba(251,191,36,0.7)'
+            }} />
+            {/* Hanging gold fringe */}
+            <div className="absolute top-[72px] left-0 bottom-0 w-4 flex flex-col" style={{ gap: 0 }}>
+              {Array.from({ length: 60 }).map((_, i) => (
+                <div key={i} style={{
+                  height: '16px',
+                  width: `${6 + Math.sin(i * 0.9) * 4}px`,
+                  background: i % 2 === 0 ? '#f59e0b' : '#d97706',
+                  opacity: 0.75,
+                  borderRadius: '0 0 3px 3px'
+                }} />
+              ))}
+            </div>
+            {/* Deep inner shadow on left edge */}
+            <div className="absolute top-0 left-0 bottom-0 w-16" style={{
+              background: 'linear-gradient(270deg, transparent, rgba(0,0,0,0.5))'
+            }} />
+          </div>
+
+          {/* ── CENTER GOLDEN SEAL / MEDALLION ── */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center pointer-events-auto" style={{ gap: 0 }}>
+            {/* Rope from pelmet */}
+            <div style={{ width: '4px', height: '80px', background: 'linear-gradient(180deg, #f59e0b, #b45309)', borderRadius: '2px', opacity: 0.85 }} />
+            {/* Medallion outer ring (Clickable Button) */}
+            <button 
+              onClick={handleCutRibbon}
+              className="rounded-full flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-transform duration-300 focus:outline-none" 
+              style={{
+                width: '90px', height: '90px',
+                background: 'radial-gradient(circle at 35% 30%, #fef08a 0%, #f59e0b 35%, #b45309 65%, #78350f 100%)',
+                border: '4px solid rgba(255,220,80,0.9)',
+                boxShadow: '0 0 30px rgba(251,191,36,0.9), 0 0 60px rgba(245,158,11,0.5), inset 0 2px 4px rgba(255,255,255,0.4)'
+            }}>
+              {/* Inner circle */}
+              <div className="rounded-full flex items-center justify-center" style={{
+                width: '65px', height: '65px',
+                background: 'radial-gradient(circle at 40% 35%, rgba(255,245,180,0.3), rgba(120,53,15,0.6))',
+                border: '2px solid rgba(255,220,80,0.6)'
+              }}>
+                <span style={{ fontSize: '28px', lineHeight: 1 }}>✂️</span>
+              </div>
+            </button>
           </div>
 
         </div>

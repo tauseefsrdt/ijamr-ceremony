@@ -73,6 +73,66 @@
   box-shadow: 0 25px 50px -12px rgba(161, 98, 7, 0.18), 0 0 25px rgba(255, 255, 255, 0.8) inset;
 }
 
+/* ── Party Celebration Animations ── */
+
+@keyframes partyRainbow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.party-bg-dots {
+  background-image:
+    radial-gradient(circle, #f43f5e 1.5px, transparent 1.5px),
+    radial-gradient(circle, #f59e0b 1.5px, transparent 1.5px),
+    radial-gradient(circle, #22c55e 1.5px, transparent 1.5px),
+    radial-gradient(circle, #3b82f6 1.5px, transparent 1.5px),
+    radial-gradient(circle, #a855f7 1.5px, transparent 1.5px);
+  background-size: 32px 32px, 48px 48px, 40px 40px, 55px 55px, 36px 36px;
+  background-position: 0 0, 16px 16px, 8px 24px, 24px 8px, 40px 32px;
+  opacity: 0.2;
+  animation: confettiBgDrift 8s linear infinite;
+}
+
+@keyframes confettiBgDrift {
+  0%   { background-position: 0 0, 16px 16px, 8px 24px, 24px 8px, 40px 32px; }
+  100% { background-position: 32px 32px, 48px 48px, 40px 56px, 56px 40px, 72px 64px; }
+}
+
+@keyframes partyRingPulse {
+  0%, 100% { opacity: 0.35; transform: scaleX(1)   scaleY(1); }
+  50%       { opacity: 0.75; transform: scaleX(1.06) scaleY(1.3); }
+}
+.party-ring-pulse {
+  background: linear-gradient(90deg, #f43f5e55, #f59e0b55, #22c55e55, #3b82f655, #a855f755);
+  filter: blur(10px);
+  animation: partyRingPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes partyIconPop {
+  0%   { opacity: 0; transform: scale(0.2) translateY(16px) rotate(-10deg); }
+  65%  { opacity: 1; transform: scale(1.15) translateY(-5px) rotate(3deg); }
+  82%  { transform: scale(0.93) translateY(2px) rotate(-1deg); }
+  100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
+}
+.party-icon-pop {
+  opacity: 0;
+  animation: partyIconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes partyTagPop {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.85); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.party-tag-pop {
+  opacity: 0;
+  animation: partyTagPop 0.4s ease-out forwards;
+}
+
+/* portal-reveal-box: NO CSS animation — GSAP handles it to prevent double blink */
+.portal-reveal-box {
+  /* animation intentionally removed; controlled by GSAP fromTo in handleCutRibbon */
+}
+
 /* Reduced Motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
