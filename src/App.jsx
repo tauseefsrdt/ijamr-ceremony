@@ -623,12 +623,9 @@ export default function App() {
           </div>
           <div className="text-left pr-2">
             <span className="font-serif-academic text-2xl sm:text-3xl font-bold text-[#071936] tracking-widest block">
-              01 • 01 • 2026
+              01 • 10 • 2026
             </span>
-            <span className="text-xs font-bold text-slate-700 tracking-wide flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-amber-700 inline" />
-              <span>Time will be announced</span>
-            </span>
+            
           </div>
         </div>
 
