@@ -791,18 +791,18 @@ export default function App() {
       <GoldenAtmosphereCanvas />
 
       {/* 3. FOREGROUND EDITORIAL CONTENT */}
-      <div className="relative z-20 max-w-4xl w-full h-full max-h-screen mx-auto text-center flex flex-col items-center justify-between px-3 sm:px-6 py-2 sm:py-4 overflow-hidden">
+      <div className="relative z-20 max-w-4xl w-full h-full max-h-screen mx-auto text-center flex flex-col items-center justify-between px-3 sm:px-6 py-2 sm:py-3 overflow-hidden">
 
         {/* Official University & Journal Logo */}
         <div
           data-animate="logo"
-          className="flex flex-col items-center justify-center my-0.5 sm:my-1"
+          className="flex flex-col items-center justify-center my-0.5"
         >
-          <div className="px-4 py-1.5 sm:px-6 sm:py-2 rounded-xl bg-[#06152d] border border-amber-400 shadow-xl shadow-slate-950/40">
+          <div className="px-5 py-2 rounded-2xl bg-[#040e20]/95 border-2 border-amber-400/90 shadow-2xl shadow-slate-950/60 backdrop-blur-md shimmer-gold-border">
             <img
               src="/logo.png"
               alt="Shri Ramswaroop Memorial University"
-              className="h-9 sm:h-12 md:h-14 w-auto max-w-[80vw] sm:max-w-[400px] object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.25)]"
+              className="h-10 sm:h-13 md:h-15 w-auto max-w-[80vw] sm:max-w-[420px] object-contain drop-shadow-[0_2px_12px_rgba(255,255,255,0.3)]"
             />
           </div>
         </div>
@@ -810,26 +810,26 @@ export default function App() {
         {/* INAUGURATION CEREMONY Tag with Diamond Lines */}
         <div
           data-animate="badge"
-          className="flex items-center justify-center gap-2.5 w-full max-w-md my-0.5"
+          className="flex items-center justify-center gap-3 w-full max-w-md my-0.5"
         >
-          <div className="h-[1.5px] flex-1 bg-gradient-to-r from-transparent to-amber-800" />
-          <span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-amber-950 font-mono-tech flex items-center gap-1.5 drop-shadow-sm">
-            <span className="text-amber-700">◇</span>
+          <div className="h-[1.5px] flex-1 bg-gradient-to-r from-transparent via-amber-600 to-amber-800" />
+          <span className="text-[10px] sm:text-xs font-black tracking-[0.3em] uppercase text-amber-950 font-mono-tech flex items-center gap-1.5 drop-shadow-sm">
+            <span className="text-amber-700 animate-pulse">◇</span>
             <span>INAUGURATION CEREMONY</span>
-            <span className="text-amber-700">◇</span>
+            <span className="text-amber-700 animate-pulse">◇</span>
           </span>
-          <div className="h-[1.5px] flex-1 bg-gradient-to-l from-transparent to-amber-800" />
+          <div className="h-[1.5px] flex-1 bg-gradient-to-l from-transparent via-amber-600 to-amber-800" />
         </div>
 
         {/* High-Contrast Bold Headline & Journal Full Name */}
-        <div data-animate="title" className="my-0.5 sm:my-1 flex flex-col items-center">
+        <div data-animate="title" className="my-0.5 flex flex-col items-center">
           <h1 className="font-serif-academic text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#071936] leading-tight drop-shadow-sm">
-            A New Chapter in <span className="italic text-[#a16207]">Scholarly Research</span>
+            A New Chapter in <span className="italic text-amber-800 drop-shadow-[0_2px_10px_rgba(245,158,11,0.25)]">Scholarly Research</span>
           </h1>
 
           {/* IJSPAST Full Name Badge */}
-          <div className="mt-1 sm:mt-1.5 px-3 sm:px-4 py-1 rounded-full bg-amber-500/15 border border-amber-600/40 shadow-sm backdrop-blur-sm flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-            <span className="text-xs sm:text-sm md:text-base font-black tracking-widest text-amber-950 font-serif-academic">
+          <div className="mt-1 sm:mt-1.5 px-3.5 sm:px-5 py-1 rounded-full bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 border-2 border-amber-500/60 shadow-md backdrop-blur-md flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+            <span className="text-xs sm:text-sm md:text-base font-black tracking-widest text-amber-950 font-serif-academic drop-shadow-sm">
               IJSPAST
             </span>
             <span className="text-amber-700 font-bold hidden sm:inline">•</span>
@@ -839,63 +839,76 @@ export default function App() {
           </div>
         </div>
 
-        {/* Description Text */}
-        <p
-          data-animate="subtitle"
-          className="text-xs sm:text-sm md:text-base font-semibold text-slate-800 tracking-wide max-w-2xl my-0.5 sm:my-1 font-sans leading-snug drop-shadow-sm"
-        >
-          Creating a global platform for innovative research and meaningful academic dialogue across science, engineering, and technology.
-        </p>
+        {/* Description Text & Key Highlights */}
+        <div data-animate="subtitle" className="my-0.5 flex flex-col items-center gap-1">
+          <p className="text-xs sm:text-sm md:text-base font-semibold text-slate-800 tracking-wide max-w-2xl font-sans leading-snug drop-shadow-sm">
+            Creating a global platform for innovative research and meaningful academic dialogue across science, engineering, and technology.
+          </p>
+
+          {/* Academic Highlight Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-0.5">
+            <span className="px-3 py-0.5 rounded-full bg-white/80 border border-amber-400/60 text-[10px] sm:text-xs font-bold text-amber-900 shadow-sm backdrop-blur-sm">
+              ✦ Peer-Reviewed
+            </span>
+            <span className="px-3 py-0.5 rounded-full bg-white/80 border border-amber-400/60 text-[10px] sm:text-xs font-bold text-amber-900 shadow-sm backdrop-blur-sm">
+              ✦ Open Access Journal
+            </span>
+            <span className="px-3 py-0.5 rounded-full bg-white/80 border border-amber-400/60 text-[10px] sm:text-xs font-bold text-amber-900 shadow-sm backdrop-blur-sm">
+              ✦ Multidisciplinary Scope
+            </span>
+          </div>
+        </div>
 
         {/* 4. Interactive Ribbon Cutting Ceremony Stage */}
         <div
           data-animate="ribbon-box"
-          className="relative w-full max-w-2xl bg-gradient-to-b from-white/98 to-amber-50/90 border-2 border-amber-400/70 rounded-2xl p-3 sm:p-4 my-1 overflow-hidden shadow-[0_6px_30px_rgba(180,83,9,0.15)] backdrop-blur-md"
+          className="relative w-full max-w-2xl bg-gradient-to-b from-white/98 via-amber-50/95 to-white/98 border-2 border-amber-400/80 rounded-2xl p-3 sm:p-4 my-1 overflow-hidden shadow-[0_8px_32px_rgba(180,83,9,0.2)] backdrop-blur-md shimmer-gold-border"
         >
           {/* Subtle golden corner accents */}
-          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-400 rounded-tl-2xl" />
-          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-400 rounded-tr-2xl" />
-          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-amber-400 rounded-bl-2xl" />
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-400 rounded-br-2xl" />
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500 rounded-tl-2xl" />
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-amber-500 rounded-tr-2xl" />
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-amber-500 rounded-bl-2xl" />
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500 rounded-br-2xl" />
 
           {/* Label above ribbon */}
-          <p className="text-center text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-amber-800/70 mb-1">✦ Official Ribbon Cutting Ceremony ✦</p>
+          <p className="text-center text-[10px] sm:text-xs font-black tracking-[0.25em] uppercase text-amber-900/80 mb-1 flex items-center justify-center gap-1">
+            <Sparkles className="w-3 h-3 text-amber-600 inline" />
+            <span>Official Ribbon Cutting Ceremony</span>
+            <Sparkles className="w-3 h-3 text-amber-600 inline" />
+          </p>
 
           {/* Golden Satin Ribbon + Scissors Stage */}
-          <div className="relative w-full flex items-center justify-center py-1 my-0.5 overflow-visible" style={{ minHeight: '68px' }}>
+          <div className="relative w-full flex items-center justify-center py-1 my-0.5 overflow-visible" style={{ minHeight: '70px' }}>
 
             {/* Left Satin Ribbon — thick luxurious gold */}
             <div className="ribbon-piece-left absolute left-0 w-[calc(50%-32px)] h-12 sm:h-14 origin-right" style={{
               background: 'linear-gradient(180deg, #fff6c0 0%, #ffd700 12%, #c8900a 38%, #f5c518 55%, #b8860b 72%, #ffd700 88%, #c8900a 100%)',
-              boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.35), 0 4px 18px rgba(160,100,0,0.28)',
-              borderTop: '2px solid rgba(255,230,100,0.7)',
-              borderBottom: '2px solid rgba(100,60,0,0.35)'
+              boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.35), 0 4px 18px rgba(160,100,0,0.3)',
+              borderTop: '2px solid rgba(255,230,100,0.8)',
+              borderBottom: '2px solid rgba(100,60,0,0.4)'
             }}>
               <div className="absolute inset-0 flex items-center justify-end pr-3">
-                <span className="text-[9px] sm:text-[10px] font-black tracking-[0.2em] uppercase text-amber-950/80 drop-shadow">OFFICIAL</span>
+                <span className="text-[9px] sm:text-[10px] font-black tracking-[0.22em] uppercase text-amber-950 drop-shadow">OFFICIAL</span>
               </div>
-              {/* Silk sheen line */}
-              <div className="absolute inset-y-0 left-1/3 w-[2px] bg-gradient-to-b from-transparent via-yellow-100/60 to-transparent" />
+              <div className="absolute inset-y-0 left-1/3 w-[2px] bg-gradient-to-b from-transparent via-yellow-100/70 to-transparent" />
             </div>
 
             {/* Right Satin Ribbon — thick luxurious gold */}
             <div className="ribbon-piece-right absolute right-0 w-[calc(50%-32px)] h-12 sm:h-14 origin-left" style={{
               background: 'linear-gradient(180deg, #fff6c0 0%, #ffd700 12%, #c8900a 38%, #f5c518 55%, #b8860b 72%, #ffd700 88%, #c8900a 100%)',
-              boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.35), 0 4px 18px rgba(160,100,0,0.28)',
-              borderTop: '2px solid rgba(255,230,100,0.7)',
-              borderBottom: '2px solid rgba(100,60,0,0.35)'
+              boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.35), 0 4px 18px rgba(160,100,0,0.3)',
+              borderTop: '2px solid rgba(255,230,100,0.8)',
+              borderBottom: '2px solid rgba(100,60,0,0.4)'
             }}>
               <div className="absolute inset-0 flex items-center justify-start pl-3">
-                <span className="text-[9px] sm:text-[10px] font-black tracking-[0.2em] uppercase text-amber-950/80 drop-shadow">INAUGURATION</span>
+                <span className="text-[9px] sm:text-[10px] font-black tracking-[0.22em] uppercase text-amber-950 drop-shadow">INAUGURATION</span>
               </div>
-              {/* Silk sheen line */}
-              <div className="absolute inset-y-0 right-1/3 w-[2px] bg-gradient-to-b from-transparent via-yellow-100/60 to-transparent" />
+              <div className="absolute inset-y-0 right-1/3 w-[2px] bg-gradient-to-b from-transparent via-yellow-100/70 to-transparent" />
             </div>
 
             {/* Center Bow / Knot decoration (only before cut) */}
             {!isCut && (
               <div className="absolute z-20 flex flex-col items-center justify-center" style={{ left: 'calc(50% - 30px)', width: '60px' }}>
-                {/* Bow loops */}
                 <div className="relative w-14 h-8 flex items-center justify-center">
                   <div className="absolute left-0 w-6 h-6 rounded-full border-2 border-amber-500" style={{ background: 'radial-gradient(circle at 30% 30%, #ffe97a, #c8900a)', boxShadow: '0 2px 6px rgba(180,100,0,0.4)' }} />
                   <div className="absolute right-0 w-6 h-6 rounded-full border-2 border-amber-500" style={{ background: 'radial-gradient(circle at 70% 30%, #ffe97a, #c8900a)', boxShadow: '0 2px 6px rgba(180,100,0,0.4)' }} />
@@ -918,16 +931,15 @@ export default function App() {
                 ref={scissorsBtnRef}
                 onClick={handleCutRibbon}
                 disabled={isAnimating}
-                className={`scissors-button absolute z-30 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex flex-col items-center justify-center gap-0.5 select-none transition-all duration-200 ${isAnimating ? 'cursor-wait' : 'cursor-pointer hover:scale-105'
+                className={`scissors-button glow-amber-pulse absolute z-30 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex flex-col items-center justify-center gap-0.5 select-none transition-all duration-300 ${isAnimating ? 'cursor-wait' : 'cursor-pointer hover:scale-110 active:scale-95'
                   }`}
                 style={{
                   background: 'linear-gradient(145deg, #1e293b, #0f172a, #1e3a5f)',
-                  border: '3px solid #fbbf24',
-                  boxShadow: '0 0 0 3px rgba(251,191,36,0.15), 0 0 25px rgba(251,191,36,0.4), 0 6px 24px rgba(0,0,0,0.5)'
+                  border: '3px solid #fbbf24'
                 }}
               >
                 <div className="scissors-icon flex items-center justify-center">
-                  <Scissors className="w-6 h-6 sm:w-7 sm:h-7 text-amber-400" style={{ filter: 'drop-shadow(0 0 6px rgba(251,191,36,0.8))' }} />
+                  <Scissors className="w-6 h-6 sm:w-7 sm:h-7 text-amber-400" style={{ filter: 'drop-shadow(0 0 8px rgba(251,191,36,0.9))' }} />
                 </div>
                 <span className="text-[7.5px] sm:text-[8.5px] font-black uppercase tracking-wider text-amber-300 leading-tight text-center px-1">
                   {isAnimating ? 'Cutting...' : 'Cut to\nInaugurate'}
@@ -937,11 +949,11 @@ export default function App() {
 
             {/* Inaugurated badge (after cut) */}
             {isCut && (
-              <div className="absolute z-30 px-4 sm:px-6 py-2 rounded-full flex items-center gap-2 text-xs sm:text-sm font-black tracking-widest shadow-xl"
+              <div className="absolute z-30 px-4 sm:px-6 py-2 rounded-full flex items-center gap-2 text-xs sm:text-sm font-black tracking-widest shadow-xl animate-bounce"
                 style={{ background: 'linear-gradient(135deg, #f59e0b, #fde68a, #d97706)', border: '2px solid #fef3c7', color: '#1c1400' }}>
                 <PartyPopper className="w-4 h-4 animate-spin" style={{ animationDuration: '3s' }} />
                 <span>OFFICIALLY INAUGURATED</span>
-                <Sparkles className="w-4 h-4 animate-bounce" />
+                <Sparkles className="w-4 h-4" />
               </div>
             )}
 
@@ -951,7 +963,7 @@ export default function App() {
           {showCeremonyDetails ? (
             <div className="portal-reveal-box mt-2 pt-2 border-t border-slate-200 flex flex-col items-center justify-center gap-2">
               {/* Celebration Fanfare Badge */}
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-amber-950 bg-gradient-to-r from-amber-100 via-amber-200 to-amber-100 px-4 py-1.5 rounded-full border border-amber-400 shadow-md animate-bounce">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-amber-950 bg-gradient-to-r from-amber-100 via-amber-200 to-amber-100 px-4 py-1.5 rounded-full border border-amber-400 shadow-md">
                 <PartyPopper className="w-4 h-4 text-amber-700" />
                 <Trophy className="w-4 h-4 text-amber-600" />
                 <span>Grand Inauguration Complete • Research Excellence Begins!</span>
@@ -987,20 +999,25 @@ export default function App() {
           )}
         </div>
 
-        {/* 5. Date Pill */}
-        <div
-          data-animate="date-pill"
-          className="inline-flex items-center gap-3 px-6 py-1.5 rounded-full bg-white/95 border-2 border-amber-500 shadow-lg my-0.5"
-        >
-          <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-800">
-            <Calendar className="w-4 h-4" />
+        {/* 5. Date Pill & Academic Footer Label */}
+        <div className="flex flex-col items-center gap-1 my-0.5">
+          <div
+            data-animate="date-pill"
+            className="inline-flex items-center gap-3 px-6 py-1.5 rounded-full bg-white/95 border-2 border-amber-500 shadow-lg"
+          >
+            <div className="p-1 rounded-lg bg-amber-500/20 text-amber-800">
+              <Calendar className="w-4 h-4" />
+            </div>
+            <span className="font-serif-academic text-xl sm:text-2xl font-bold text-[#071936] tracking-widest">
+              01 • 10 • 2026
+            </span>
           </div>
-          <span className="font-serif-academic text-xl sm:text-2xl font-bold text-[#071936] tracking-widest">
-            01 • 10 • 2026
-          </span>
+
+          <p className="text-[11px] sm:text-xs text-slate-900 font-bold tracking-wider flex items-center justify-center gap-1.5 drop-shadow-sm bg-white/90 px-4 py-1 rounded-full border border-slate-200/80">
+            <BookOpen className="w-3.5 h-3.5 text-amber-700 inline shrink-0" />
+            <span>Published by Shri Ramswaroop Memorial University (SRMU)</span>
+          </p>
         </div>
-
-
 
       </div>
     </main>
