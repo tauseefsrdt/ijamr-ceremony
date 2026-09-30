@@ -110,7 +110,10 @@ export default function App() {
   const bgImgRef = useRef(null);
   const scissorsBtnRef = useRef(null);
   const [isCut, setIsCut] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showFlash, setShowFlash] = useState(false);
   const [showCeremonyDetails, setShowCeremonyDetails] = useState(false);
+  const drumIntervalRef = useRef(null);
 
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -196,38 +199,95 @@ export default function App() {
     };
   }, []);
 
+  // Stop drum beat immediately
+  const stopDrumLoop = () => {
+    if (drumIntervalRef.current) {
+      clearInterval(drumIntervalRef.current);
+      drumIntervalRef.current = null;
+    }
+  };
+
   const handleCutRibbon = () => {
-    if (isCut) return;
-    setIsCut(true);
+    if (isCut || isAnimating) return;
+    setIsAnimating(true);
+    stopDrumLoop(); // Stop drums immediately on click
 
-    gsap.to('.ribbon-piece-left', {
-      xPercent: -125,
-      rotation: -18,
-      opacity: 0.15,
-      duration: 1.2,
-      ease: 'power3.inOut'
-    });
+    const tl = gsap.timeline();
 
-    gsap.to('.ribbon-piece-right', {
-      xPercent: 125,
-      rotation: 18,
-      opacity: 0.15,
-      duration: 1.2,
-      ease: 'power3.inOut'
-    });
-
-    gsap.to('.scissors-button', {
+    // Stage 1: Scissors grow & approach ribbon center
+    tl.to('.scissors-button', {
+      scale: 1.18,
+      y: -6,
+      boxShadow: '0 0 40px rgba(251,191,36,0.95), 0 0 80px rgba(245,158,11,0.5)',
+      duration: 0.4,
+      ease: 'power2.out'
+    })
+    // Stage 2: Scissors rotate (blades closing / snip)
+    .to('.scissors-icon', {
+      rotate: 30,
+      scale: 1.3,
+      duration: 0.18,
+      ease: 'power3.in'
+    })
+    .to('.scissors-icon', {
+      rotate: -8,
+      scale: 1.0,
+      duration: 0.12,
+      ease: 'power4.out'
+    })
+    // Stage 3: Flash burst at cut point
+    .call(() => {
+      setShowFlash(true);
+      // Play snip sound
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          const actx = new AudioCtx();
+          const now = actx.currentTime;
+          const buf = actx.createBuffer(1, Math.floor(actx.sampleRate * 0.1), actx.sampleRate);
+          const d = buf.getChannelData(0);
+          for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (actx.sampleRate * 0.022));
+          const src = actx.createBufferSource(); src.buffer = buf;
+          const fil = actx.createBiquadFilter(); fil.type = 'bandpass'; fil.frequency.value = 3800; fil.Q.value = 3.5;
+          const g = actx.createGain(); g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          src.connect(fil); fil.connect(g); g.connect(actx.destination); src.start(now);
+        }
+      } catch (_) {}
+      setTimeout(() => setShowFlash(false), 220);
+    })
+    // Stage 4: Ribbon halves fly apart
+    .to('.ribbon-piece-left', {
+      xPercent: -130,
+      rotation: -22,
+      y: 18,
+      opacity: 0,
+      duration: 0.9,
+      ease: 'power4.inOut'
+    }, '-=0.05')
+    .to('.ribbon-piece-right', {
+      xPercent: 130,
+      rotation: 22,
+      y: 18,
+      opacity: 0,
+      duration: 0.9,
+      ease: 'power4.inOut'
+    }, '<')
+    // Stage 5: Scissors button disappears
+    .to('.scissors-button', {
       scale: 0,
       opacity: 0,
-      duration: 0.35,
-      ease: 'power2.in',
-      onComplete: () => {
-        setShowCeremonyDetails(true);
-        gsap.fromTo('.portal-reveal-box',
-          { opacity: 0, y: 15, scale: 0.95 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.5)' }
-        );
-      }
+      duration: 0.3,
+      ease: 'back.in(2)'
+    }, '<+=0.2')
+    // Stage 6: Mark cut & reveal celebration
+    .call(() => {
+      setIsCut(true);
+      setIsAnimating(false);
+      setShowCeremonyDetails(true);
+      gsap.fromTo('.portal-reveal-box',
+        { opacity: 0, y: 20, scale: 0.9 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'back.out(1.6)' }
+      );
     });
 
     // Play subtle high-end celebration audio chime synthesized via Web Audio API (no external file needed)
@@ -414,39 +474,102 @@ export default function App() {
         {/* 4. Interactive Ribbon Cutting Ceremony Stage */}
         <div
           data-animate="ribbon-box"
-          className="relative w-full max-w-2xl bg-white/95 border-2 border-amber-500/60 rounded-3xl p-5 sm:p-6 mb-4 overflow-hidden shadow-2xl backdrop-blur-md"
+          className="relative w-full max-w-2xl bg-gradient-to-b from-white/98 to-amber-50/90 border-2 border-amber-400/70 rounded-3xl p-5 sm:p-7 mb-4 overflow-hidden shadow-[0_8px_40px_rgba(180,83,9,0.18),0_2px_8px_rgba(0,0,0,0.08)] backdrop-blur-md"
         >
-          {/* Golden Satin Ribbon */}
-          <div className="relative w-full flex items-center justify-center py-4 my-1 overflow-hidden">
+          {/* Subtle golden corner accents */}
+          <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl" />
+          <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl" />
+          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl" />
+          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-amber-400 rounded-br-3xl" />
 
-            {/* Left Satin Ribbon */}
-            <div className="ribbon-piece-left w-1/2 h-12 bg-gradient-to-r from-amber-700 via-amber-500 to-amber-300 border-t-2 border-b-2 border-amber-100 shadow-md flex items-center justify-end pr-5 text-slate-950 font-bold font-serif-academic text-xs sm:text-sm tracking-widest origin-left">
-              <span>OFFICIAL</span>
+          {/* Label above ribbon */}
+          <p className="text-center text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-amber-800/70 mb-2">✦ Official Ribbon Cutting Ceremony ✦</p>
+
+          {/* Golden Satin Ribbon + Scissors Stage */}
+          <div className="relative w-full flex items-center justify-center py-2 my-1 overflow-visible" style={{ minHeight: '80px' }}>
+
+            {/* Left Satin Ribbon — thick luxurious gold */}
+            <div className="ribbon-piece-left absolute left-0 w-[calc(50%-40px)] h-16 origin-right" style={{
+              background: 'linear-gradient(180deg, #fff6c0 0%, #ffd700 12%, #c8900a 38%, #f5c518 55%, #b8860b 72%, #ffd700 88%, #c8900a 100%)',
+              boxShadow: 'inset 0 3px 6px rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.35), 0 6px 24px rgba(160,100,0,0.28)',
+              borderTop: '2px solid rgba(255,230,100,0.7)',
+              borderBottom: '2px solid rgba(100,60,0,0.35)'
+            }}>
+              <div className="absolute inset-0 flex items-center justify-end pr-4">
+                <span className="text-[10px] sm:text-xs font-black tracking-[0.22em] uppercase text-amber-950/80 drop-shadow">OFFICIAL</span>
+              </div>
+              {/* Silk sheen line */}
+              <div className="absolute inset-y-0 left-1/3 w-[2px] bg-gradient-to-b from-transparent via-yellow-100/60 to-transparent" />
             </div>
 
-            {/* Central Scissors Trigger Button */}
-            {/* Central Scissors Trigger Button or Celebrated Badge */}
-            {!isCut ? (
-              <button
-                ref={scissorsBtnRef}
-                onClick={handleCutRibbon}
-                className="scissors-button absolute z-30 px-6 sm:px-8 py-3 rounded-full bg-gradient-to-r from-slate-950 via-[#0e1e38] to-slate-950 hover:from-amber-500 hover:to-amber-600 border-2 border-amber-400 text-amber-300 hover:text-slate-950 font-bold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 active:scale-95 flex items-center gap-2.5 cursor-pointer select-none shadow-2xl"
-              >
-                <Scissors className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 group-hover:text-slate-950 animate-bounce" />
-                <span>Cut Ribbon to Inaugurate</span>
-              </button>
-            ) : (
-              <div className="absolute z-30 px-5 sm:px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 border-2 border-amber-100 text-slate-950 flex items-center gap-2.5 text-xs sm:text-sm font-black tracking-widest shadow-2xl animate-pulse">
-                <PartyPopper className="w-5 h-5 text-amber-900 animate-spin" style={{ animationDuration: '3s' }} />
-                <span>OFFICIALLY INAUGURATED</span>
-                <Sparkles className="w-5 h-5 text-amber-900 animate-bounce" />
+            {/* Right Satin Ribbon — thick luxurious gold */}
+            <div className="ribbon-piece-right absolute right-0 w-[calc(50%-40px)] h-16 origin-left" style={{
+              background: 'linear-gradient(180deg, #fff6c0 0%, #ffd700 12%, #c8900a 38%, #f5c518 55%, #b8860b 72%, #ffd700 88%, #c8900a 100%)',
+              boxShadow: 'inset 0 3px 6px rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.35), 0 6px 24px rgba(160,100,0,0.28)',
+              borderTop: '2px solid rgba(255,230,100,0.7)',
+              borderBottom: '2px solid rgba(100,60,0,0.35)'
+            }}>
+              <div className="absolute inset-0 flex items-center justify-start pl-4">
+                <span className="text-[10px] sm:text-xs font-black tracking-[0.22em] uppercase text-amber-950/80 drop-shadow">INAUGURATION</span>
+              </div>
+              {/* Silk sheen line */}
+              <div className="absolute inset-y-0 right-1/3 w-[2px] bg-gradient-to-b from-transparent via-yellow-100/60 to-transparent" />
+            </div>
+
+            {/* Center Bow / Knot decoration (only before cut) */}
+            {!isCut && (
+              <div className="absolute z-20 flex flex-col items-center justify-center" style={{ left: 'calc(50% - 36px)', width: '72px' }}>
+                {/* Bow loops */}
+                <div className="relative w-16 h-10 flex items-center justify-center">
+                  <div className="absolute left-0 w-7 h-7 rounded-full border-4 border-amber-500" style={{ background: 'radial-gradient(circle at 30% 30%, #ffe97a, #c8900a)', boxShadow: '0 2px 8px rgba(180,100,0,0.4)' }} />
+                  <div className="absolute right-0 w-7 h-7 rounded-full border-4 border-amber-500" style={{ background: 'radial-gradient(circle at 70% 30%, #ffe97a, #c8900a)', boxShadow: '0 2px 8px rgba(180,100,0,0.4)' }} />
+                  <div className="absolute w-5 h-5 rounded-full z-10 border-2 border-amber-300" style={{ background: 'radial-gradient(circle at 35% 35%, #fff5a0, #b8860b)', boxShadow: '0 0 8px rgba(255,200,0,0.7)' }} />
+                </div>
               </div>
             )}
 
-            {/* Right Satin Ribbon */}
-            <div className="ribbon-piece-right w-1/2 h-12 bg-gradient-to-r from-amber-300 via-amber-500 to-amber-700 border-t-2 border-b-2 border-amber-100 shadow-md flex items-center justify-start pl-5 text-slate-950 font-bold font-serif-academic text-xs sm:text-sm tracking-widest origin-right">
-              <span>INAUGURATION</span>
-            </div>
+            {/* Cut flash burst overlay */}
+            {showFlash && (
+              <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+                <div className="w-24 h-24 rounded-full animate-ping" style={{ background: 'radial-gradient(circle, rgba(255,240,100,0.95) 0%, rgba(251,191,36,0.6) 50%, transparent 80%)' }} />
+                <div className="absolute text-3xl animate-ping" style={{ animationDuration: '0.2s' }}>✂️</div>
+              </div>
+            )}
+
+            {/* Central Scissors Trigger Button */}
+            {!isCut && (
+              <button
+                ref={scissorsBtnRef}
+                onClick={handleCutRibbon}
+                disabled={isAnimating}
+                className={`scissors-button absolute z-30 w-20 h-20 sm:w-24 sm:h-24 rounded-full flex flex-col items-center justify-center gap-1 select-none transition-all duration-200 ${
+                  isAnimating ? 'cursor-wait' : 'cursor-pointer hover:scale-105'
+                }`}
+                style={{
+                  background: 'linear-gradient(145deg, #1e293b, #0f172a, #1e3a5f)',
+                  border: '3px solid #fbbf24',
+                  boxShadow: '0 0 0 4px rgba(251,191,36,0.15), 0 0 30px rgba(251,191,36,0.4), 0 8px 32px rgba(0,0,0,0.5)'
+                }}
+              >
+                <div className="scissors-icon flex items-center justify-center">
+                  <Scissors className="w-7 h-7 sm:w-8 sm:h-8 text-amber-400" style={{ filter: 'drop-shadow(0 0 6px rgba(251,191,36,0.8))' }} />
+                </div>
+                <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-amber-300 leading-tight text-center px-1">
+                  {isAnimating ? 'Cutting...' : 'Cut to\nInaugurate'}
+                </span>
+              </button>
+            )}
+
+            {/* Inaugurated badge (after cut) */}
+            {isCut && (
+              <div className="absolute z-30 px-5 sm:px-7 py-2.5 rounded-full flex items-center gap-2.5 text-xs sm:text-sm font-black tracking-widest shadow-2xl"
+                style={{ background: 'linear-gradient(135deg, #f59e0b, #fde68a, #d97706)', border: '2px solid #fef3c7', color: '#1c1400' }}>
+                <PartyPopper className="w-5 h-5 animate-spin" style={{ animationDuration: '3s' }} />
+                <span>OFFICIALLY INAUGURATED</span>
+                <Sparkles className="w-5 h-5 animate-bounce" />
+              </div>
+            )}
+
           </div>
 
           {/* Action After Ribbon Cut */}
