@@ -125,6 +125,10 @@ export default function App() {
   const rayRef = useRef(null);
   const haloRef = useRef(null);
   const shimmerRef = useRef(null);
+  const vectorArcRef = useRef(null);
+  const vectorSparkRef = useRef(null);
+  const confettiBurstRef = useRef(null);
+  const festiveLightsRef = useRef(null);
 
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -269,6 +273,64 @@ export default function App() {
           ease: 'power1.inOut',
           delay: 1.5,
           repeatDelay: 6
+        });
+      }
+
+      // Premium vector art motion
+      if (vectorArcRef.current) {
+        gsap.fromTo(vectorArcRef.current,
+          { opacity: 0.28, scale: 0.96 },
+          { opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out' }
+        );
+        gsap.to(vectorArcRef.current, {
+          rotation: 6,
+          y: -10,
+          duration: 12,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut'
+        });
+      }
+
+      if (vectorSparkRef.current) {
+        gsap.to(vectorSparkRef.current, {
+          opacity: 0.9,
+          scale: 1.08,
+          duration: 2.8,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut'
+        });
+      }
+
+      // More festive background motion
+      if (confettiBurstRef.current) {
+        gsap.fromTo(confettiBurstRef.current,
+          { opacity: 0.12, scale: 0.88 },
+          { opacity: 1, scale: 1.1, duration: 2.4, ease: 'power2.out' }
+        );
+        gsap.to(confettiBurstRef.current, {
+          rotation: 10,
+          y: -12,
+          duration: 9,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut'
+        });
+      }
+
+      if (festiveLightsRef.current) {
+        gsap.fromTo(festiveLightsRef.current,
+          { opacity: 0.4 },
+          { opacity: 1, duration: 2.2, ease: 'power2.out' }
+        );
+        gsap.to(festiveLightsRef.current, {
+          scale: 1.18,
+          opacity: 0.8,
+          duration: 7,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut'
         });
       }
 
@@ -561,9 +623,10 @@ export default function App() {
   return (
     <main
       ref={containerRef}
-      className="relative h-screen h-[100vh] h-[100svh] w-full flex flex-col items-center justify-between overflow-hidden bg-[#0a1526] text-slate-900 select-none"
+      className="premium-shell relative h-screen h-[100vh] h-[100svh] w-full flex flex-col items-center justify-between overflow-hidden bg-[#070d16] text-slate-900 select-none"
       style={{ height: '100vh', maxHeight: '100vh' }}
     >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.18),_transparent_32%),radial-gradient(circle_at_bottom,_rgba(59,130,246,0.12),_transparent_38%)]" />
       {/* ══ PREMIUM RED VELVET CURTAIN (PARDA) ══ */}
       {!curtainOpen && (
         <div className="absolute inset-0 z-50 pointer-events-none" aria-hidden="true">
@@ -731,6 +794,86 @@ export default function App() {
           className="w-full h-full object-cover object-center transform scale-105 filter brightness-[1.02] contrast-[1.03]"
         />
 
+        <svg
+          ref={vectorArcRef}
+          className="vector-glow vector-float absolute inset-0 w-full h-full opacity-80"
+          viewBox="0 0 1600 900"
+          preserveAspectRatio="none"
+        >
+          <g fill="none" strokeLinecap="round">
+            <path d="M-40 450 C 200 220, 440 180, 660 430 S 1110 700, 1660 420" stroke="rgba(255,255,255,0.72)" strokeWidth="5" />
+            <path d="M-70 540 C 180 290, 460 260, 720 520 S 1180 770, 1665 510" stroke="rgba(251,191,36,0.42)" strokeWidth="7" />
+            <path d="M-100 420 C 260 170, 440 160, 680 420 S 1090 630, 1660 390" stroke="rgba(255,255,255,0.38)" strokeWidth="2.5" strokeDasharray="10 18" />
+          </g>
+
+          <g fill="rgba(255,255,255,0.78)">
+            <path d="M200 260 L220 310 L260 260 L220 210 Z" />
+            <path d="M1300 270 L1325 320 L1368 270 L1325 220 Z" />
+            <path d="M1000 590 L1024 638 L1070 590 L1024 544 Z" />
+          </g>
+
+          <g fill="rgba(251,191,36,0.8)">
+            <circle cx="255" cy="240" r="5" />
+            <circle cx="1350" cy="250" r="4.8" />
+            <circle cx="1060" cy="610" r="4.4" />
+          </g>
+        </svg>
+
+        <svg
+          ref={vectorSparkRef}
+          className="vector-glow absolute inset-0 w-full h-full opacity-70"
+          viewBox="0 0 1600 900"
+          preserveAspectRatio="none"
+        >
+          <g fill="none" stroke="rgba(255,255,255,0.75)" strokeLinecap="round" strokeWidth="2">
+            <path d="M120 120 L150 180 L210 150 L150 90 Z" />
+            <path d="M1470 180 L1505 240 L1560 210 L1505 150 Z" />
+            <path d="M1120 760 L1156 820 L1215 790 L1156 730 Z" />
+            <path d="M300 700 L332 760 L392 732 L332 672 Z" />
+          </g>
+          <g fill="rgba(251,191,36,0.8)">
+            <circle cx="220" cy="500" r="3.3" />
+            <circle cx="720" cy="330" r="2.8" />
+            <circle cx="930" cy="510" r="3.6" />
+            <circle cx="1280" cy="430" r="2.9" />
+            <circle cx="1110" cy="700" r="3.1" />
+          </g>
+          <g stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" fill="none">
+            <path d="M170 290 L150 330 L110 310" />
+            <path d="M1400 500 L1428 518 L1449 555" />
+            <path d="M760 655 L790 690 L835 670" />
+          </g>
+        </svg>
+
+        <svg
+          ref={confettiBurstRef}
+          className="vector-glow absolute inset-0 w-full h-full opacity-70"
+          viewBox="0 0 1600 900"
+          preserveAspectRatio="none"
+        >
+          <g stroke="rgba(255,255,255,0.7)" strokeWidth="2" fill="none" strokeLinecap="round">
+            <path d="M170 730 L180 760 L210 770 L180 790 L170 820 L160 790 L130 780 L160 760 Z" />
+            <path d="M1280 720 L1300 755 L1340 768 L1300 782 L1280 820 L1260 782 L1220 768 L1260 755 Z" />
+            <path d="M1100 250 L1115 285 L1150 300 L1115 315 L1100 350 L1085 315 L1050 300 L1085 285 Z" />
+            <path d="M430 260 L450 295 L490 305 L450 320 L430 360 L410 320 L370 305 L410 295 Z" />
+          </g>
+          <g fill="rgba(251,191,36,0.82)">
+            <circle cx="460" cy="430" r="3.5"/>
+            <circle cx="1180" cy="500" r="3.8"/>
+            <circle cx="910" cy="260" r="3.2"/>
+            <circle cx="680" cy="710" r="3.5"/>
+          </g>
+        </svg>
+
+        <div
+          ref={festiveLightsRef}
+          className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[42%] pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18), transparent 54%)',
+            filter: 'blur(18px)'
+          }}
+        />
+
         {/* ── ANIMATED GOLDEN ORB 1 — large warm glow, top-left ── */}
         <div ref={orb1Ref} className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full pointer-events-none" style={{
           background: 'radial-gradient(circle at 40% 40%, rgba(251,191,36,0.38) 0%, rgba(217,119,6,0.18) 45%, transparent 70%)',
@@ -791,18 +934,18 @@ export default function App() {
       <GoldenAtmosphereCanvas />
 
       {/* 3. FOREGROUND EDITORIAL CONTENT */}
-      <div className="relative z-20 max-w-4xl w-full h-full max-h-screen mx-auto text-center flex flex-col items-center justify-between px-3 sm:px-6 py-2 sm:py-3 overflow-hidden">
+      <div className="relative z-20 max-w-5xl w-full h-full max-h-screen mx-auto text-center flex flex-col items-center justify-between px-3 sm:px-6 py-3 sm:py-5 overflow-hidden">
 
         {/* Official University & Journal Logo */}
         <div
           data-animate="logo"
           className="flex flex-col items-center justify-center my-0.5"
         >
-          <div className="px-5 py-2 rounded-2xl bg-[#040e20]/95 border-2 border-amber-400/90 shadow-2xl shadow-slate-950/60 backdrop-blur-md shimmer-gold-border">
+          <div className="px-4 py-4 rounded-[.4rem] border border-amber-300/70 bg-[linear-gradient(135deg,#071b2d,#0d2741,#0b1c2d)] shadow-[0_18px_48px_rgba(15,23,42,0.30)] ring-1 ring-amber-200/80">
             <img
               src="/logo.png"
               alt="Shri Ramswaroop Memorial University"
-              className="h-10 sm:h-13 md:h-15 w-auto max-w-[80vw] sm:max-w-[420px] object-contain drop-shadow-[0_2px_12px_rgba(255,255,255,0.3)]"
+              className="h-8 sm:h-10 md:h-11 w-auto max-w-[62vw] sm:max-w-[300px] object-contain drop-shadow-[0_4px_18px_rgba(251,191,36,0.35)]"
             />
           </div>
         </div>
@@ -810,25 +953,25 @@ export default function App() {
         {/* INAUGURATION CEREMONY Tag with Diamond Lines */}
         <div
           data-animate="badge"
-          className="flex items-center justify-center gap-3 w-full max-w-md my-0.5"
+          className="premium-badge flex items-center justify-center gap-3 w-full max-w-md mx-auto my-0.5 rounded-full px-4 py-2"
         >
-          <div className="h-[1.5px] flex-1 bg-gradient-to-r from-transparent via-amber-600 to-amber-800" />
-          <span className="text-[10px] sm:text-xs font-black tracking-[0.3em] uppercase text-amber-950 font-mono-tech flex items-center gap-1.5 drop-shadow-sm">
+          <div className="gold-divider h-[1.5px] flex-1 rounded-full" />
+          <span className="text-[10px] sm:text-xs font-black tracking-[0.28em] uppercase text-amber-950 font-mono-tech flex items-center gap-1.5 drop-shadow-sm">
             <span className="text-amber-700 animate-pulse">◇</span>
             <span>INAUGURATION CEREMONY</span>
             <span className="text-amber-700 animate-pulse">◇</span>
           </span>
-          <div className="h-[1.5px] flex-1 bg-gradient-to-l from-transparent via-amber-600 to-amber-800" />
+          <div className="gold-divider h-[1.5px] flex-1 rounded-full" />
         </div>
 
         {/* High-Contrast Bold Headline & Journal Full Name */}
-        <div data-animate="title" className="my-0.5 flex flex-col items-center">
-          <h1 className="font-serif-academic text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#071936] leading-tight drop-shadow-sm">
-            A New Chapter in <span className="italic text-amber-800 drop-shadow-[0_2px_10px_rgba(245,158,11,0.25)]">Scholarly Research</span>
+        <div data-animate="title" className="title-sweep-wrap my-0.5 flex flex-col items-center">
+          <h1 className="title-sweep luxury-heading font-serif-academic text-[2.3rem] sm:text-4xl md:text-6xl font-bold tracking-[-0.04em] leading-[0.95] drop-shadow-sm">
+            A New Chapter in <span className="italic text-amber-700 drop-shadow-[0_2px_12px_rgba(245,158,11,0.28)]">Scholarly Research</span>
           </h1>
 
           {/* IJSPAST Full Name Badge */}
-          <div className="mt-1 sm:mt-1.5 px-3.5 sm:px-5 py-1 rounded-full bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 border-2 border-amber-500/60 shadow-md backdrop-blur-md flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+          <div className="premium-pill mt-2 sm:mt-3 px-3.5 sm:px-5 py-1.5 rounded-full flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
             <span className="text-xs sm:text-sm md:text-base font-black tracking-widest text-amber-950 font-serif-academic drop-shadow-sm">
               IJSPAST
             </span>
@@ -841,28 +984,28 @@ export default function App() {
 
         {/* Description Text & Key Highlights */}
         <div data-animate="subtitle" className="my-0.5 flex flex-col items-center gap-1">
-          <p className="text-xs sm:text-sm md:text-base font-semibold text-slate-800 tracking-wide max-w-2xl font-sans leading-snug drop-shadow-sm">
+          <p className="text-xs sm:text-sm md:text-base font-medium text-slate-800 tracking-[0.02em] normal-case max-w-2xl font-sans leading-snug drop-shadow-sm luxury-subheading">
             Creating a global platform for innovative research and meaningful academic dialogue across science, engineering, and technology.
           </p>
 
           {/* Academic Highlight Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-0.5">
-            <span className="px-3 py-0.5 rounded-full bg-white/80 border border-amber-400/60 text-[10px] sm:text-xs font-bold text-amber-900 shadow-sm backdrop-blur-sm">
+          {/* <div className="flex flex-wrap items-center justify-center gap-2 mt-0.5">
+            <span className="premium-pill px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold text-amber-900">
               ✦ Peer-Reviewed
             </span>
-            <span className="px-3 py-0.5 rounded-full bg-white/80 border border-amber-400/60 text-[10px] sm:text-xs font-bold text-amber-900 shadow-sm backdrop-blur-sm">
+            <span className="premium-pill px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold text-amber-900">
               ✦ Open Access Journal
             </span>
-            <span className="px-3 py-0.5 rounded-full bg-white/80 border border-amber-400/60 text-[10px] sm:text-xs font-bold text-amber-900 shadow-sm backdrop-blur-sm">
+            <span className="premium-pill px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold text-amber-900">
               ✦ Multidisciplinary Scope
             </span>
-          </div>
+          </div> */}
         </div>
 
         {/* 4. Interactive Ribbon Cutting Ceremony Stage */}
         <div
           data-animate="ribbon-box"
-          className="relative w-full max-w-2xl bg-gradient-to-b from-white/98 via-amber-50/95 to-white/98 border-2 border-amber-400/80 rounded-2xl p-3 sm:p-4 my-1 overflow-hidden shadow-[0_8px_32px_rgba(180,83,9,0.2)] backdrop-blur-md shimmer-gold-border"
+          className="premium-panel relative w-full max-w-2xl border border-amber-400/80 rounded-[2rem] p-3 sm:p-4 my-1 overflow-hidden shadow-[0_20px_60px_rgba(120,53,15,0.18)]"
         >
           {/* Subtle golden corner accents */}
           <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500 rounded-tl-2xl" />
@@ -974,7 +1117,7 @@ export default function App() {
                   href={JOURNAL_INFO.portalUrl || "https://srmu-journal.netlify.app/"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-2 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all inline-flex items-center gap-2 shadow-lg shadow-amber-500/30 hover:scale-105"
+                  className="premium-button px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all inline-flex items-center gap-2 shadow-lg shadow-amber-500/30 hover:scale-[1.02]"
                 >
                   <PartyPopper className="w-4 h-4 text-slate-950" />
                   <span>Enter Journal Portal</span>
@@ -1000,22 +1143,22 @@ export default function App() {
         </div>
 
         {/* 5. Date Pill & Academic Footer Label */}
-        <div className="flex flex-col items-center gap-1 my-0.5">
+        <div className="flex flex-col items-center gap-1 my-0.5 pb-2">
           <div
             data-animate="date-pill"
-            className="inline-flex items-center gap-3 px-6 py-1.5 rounded-full bg-white/95 border-2 border-amber-500 shadow-lg"
+            className="premium-pill inline-flex items-center gap-3 px-6 py-2 rounded-full border border-amber-500/60 shadow-[0_12px_26px_rgba(146,64,14,0.12)]"
           >
-            <div className="p-1 rounded-lg bg-amber-500/20 text-amber-800">
+            <div className="p-1.5 rounded-lg bg-gradient-to-br from-amber-200 to-amber-500/20 text-amber-800 ring-1 ring-amber-300/60">
               <Calendar className="w-4 h-4" />
             </div>
-            <span className="font-serif-academic text-xl sm:text-2xl font-bold text-[#071936] tracking-widest">
+            <span className="font-serif-academic text-2xl sm:text-3xl font-semibold text-[#071936] tracking-[0.12em] leading-none">
               01 • 10 • 2026
             </span>
           </div>
 
-          <p className="text-[11px] sm:text-xs text-slate-900 font-bold tracking-wider flex items-center justify-center gap-1.5 drop-shadow-sm bg-white/90 px-4 py-1 rounded-full border border-slate-200/80">
+          <p className="text-[11px] mt-2 sm:text-xs text-slate-900 font-bold tracking-wider flex items-center justify-center gap-1.5 drop-shadow-sm bg-white/90 px-4 py-1 rounded-full border border-slate-200/80">
             <BookOpen className="w-3.5 h-3.5 text-amber-700 inline shrink-0" />
-            <span>Published by Shri Ramswaroop Memorial University (SRMU)</span>
+            <span>Published by SRDT</span>
           </p>
         </div>
 
