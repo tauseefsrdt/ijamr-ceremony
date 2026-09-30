@@ -113,7 +113,18 @@ export default function App() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
   const [showCeremonyDetails, setShowCeremonyDetails] = useState(false);
+  const [curtainOpen, setCurtainOpen] = useState(false);
+  const curtainLeftRef  = useRef(null);
+  const curtainRightRef = useRef(null);
   const drumIntervalRef = useRef(null);
+
+  // Animated BG element refs
+  const orb1Ref = useRef(null);
+  const orb2Ref = useRef(null);
+  const orb3Ref = useRef(null);
+  const rayRef  = useRef(null);
+  const haloRef = useRef(null);
+  const shimmerRef = useRef(null);
 
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -173,6 +184,94 @@ export default function App() {
         });
       }
 
+      // 4. ── BG GSAP ANIMATIONS ──
+
+      // Orb 1: large golden drift — top-left → bottom-right
+      if (orb1Ref.current) {
+        gsap.fromTo(orb1Ref.current,
+          { x: -60, y: -40, opacity: 0, scale: 0.7 },
+          { x: 0, y: 0, opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out' }
+        );
+        gsap.to(orb1Ref.current, {
+          x: 80, y: 60, scale: 1.18,
+          duration: 18,
+          repeat: -1, yoyo: true, ease: 'sine.inOut'
+        });
+      }
+
+      // Orb 2: rose/coral accent — top-right drift
+      if (orb2Ref.current) {
+        gsap.fromTo(orb2Ref.current,
+          { x: 50, y: -30, opacity: 0 },
+          { x: 0, y: 0, opacity: 1, duration: 2.6, ease: 'power2.out', delay: 0.4 }
+        );
+        gsap.to(orb2Ref.current, {
+          x: -70, y: 80, scale: 1.22,
+          duration: 22,
+          repeat: -1, yoyo: true, ease: 'sine.inOut',
+          delay: 2
+        });
+      }
+
+      // Orb 3: blue/purple deep accent — bottom drift
+      if (orb3Ref.current) {
+        gsap.fromTo(orb3Ref.current,
+          { x: 0, y: 60, opacity: 0 },
+          { x: 0, y: 0, opacity: 1, duration: 3.0, ease: 'power2.out', delay: 0.8 }
+        );
+        gsap.to(orb3Ref.current, {
+          x: 55, y: -50, scale: 1.15,
+          duration: 26,
+          repeat: -1, yoyo: true, ease: 'sine.inOut',
+          delay: 4
+        });
+      }
+
+      // Rotating light ray — slow clockwise spin
+      if (rayRef.current) {
+        gsap.fromTo(rayRef.current,
+          { rotation: -20, opacity: 0 },
+          { rotation: 0, opacity: 1, duration: 2.5, ease: 'power2.out' }
+        );
+        gsap.to(rayRef.current, {
+          rotation: 360,
+          duration: 60,
+          repeat: -1,
+          ease: 'none',
+          transformOrigin: '50% 50%'
+        });
+      }
+
+      // Radial halo pulse
+      if (haloRef.current) {
+        gsap.fromTo(haloRef.current,
+          { scale: 0.85, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 2.0, ease: 'power2.out', delay: 0.6 }
+        );
+        gsap.to(haloRef.current, {
+          scale: 1.12,
+          opacity: 0.55,
+          duration: 8,
+          repeat: -1, yoyo: true, ease: 'sine.inOut'
+        });
+      }
+
+      // Shimmer horizontal sweep
+      if (shimmerRef.current) {
+        gsap.fromTo(shimmerRef.current,
+          { xPercent: -120, opacity: 0 },
+          { xPercent: -120, opacity: 1, duration: 0.5, delay: 1.0 }
+        );
+        gsap.to(shimmerRef.current, {
+          xPercent: 120,
+          duration: 5,
+          repeat: -1,
+          ease: 'power1.inOut',
+          delay: 1.5,
+          repeatDelay: 6
+        });
+      }
+
     }, containerRef);
 
     // 4. Interactive 3D Mouse Parallax
@@ -189,6 +288,12 @@ export default function App() {
         ease: 'power1.out',
         overwrite: 'auto'
       });
+
+      // Parallax depth layers — orbs move at different speeds
+      if (orb1Ref.current) gsap.to(orb1Ref.current, { x: xPercent * 1.8, y: yPercent * 1.8, duration: 3.0, ease: 'power1.out', overwrite: 'auto' });
+      if (orb2Ref.current) gsap.to(orb2Ref.current, { x: xPercent * -1.4, y: yPercent * -1.4, duration: 3.5, ease: 'power1.out', overwrite: 'auto' });
+      if (orb3Ref.current) gsap.to(orb3Ref.current, { x: xPercent * 0.9, y: yPercent * -0.9, duration: 4.0, ease: 'power1.out', overwrite: 'auto' });
+      if (rayRef.current) gsap.to(rayRef.current, { x: xPercent * 0.4, y: yPercent * 0.4, duration: 5.0, ease: 'power1.out', overwrite: 'auto' });
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
@@ -212,6 +317,32 @@ export default function App() {
     setIsAnimating(true);
     stopDrumLoop(); // Stop drums immediately on click
 
+    // ══ STAGE 0: Open Red Velvet Curtain first ══
+    const curtainTl = gsap.timeline({
+      onComplete: () => startRibbonCut()
+    });
+
+    // Shake curtain first (dramatic tension)
+    curtainTl
+      .to([curtainLeftRef.current, curtainRightRef.current], {
+        x: (i) => i === 0 ? -10 : 10,
+        duration: 0.1, ease: 'power1.inOut', repeat: 3, yoyo: true
+      })
+      // Then part apart dramatically
+      .to(curtainLeftRef.current, {
+        xPercent: -100,
+        duration: 1.4,
+        ease: 'power3.inOut'
+      }, '+=0.05')
+      .to(curtainRightRef.current, {
+        xPercent: 100,
+        duration: 1.4,
+        ease: 'power3.inOut'
+      }, '<')
+      .call(() => setCurtainOpen(true));
+  };
+
+  const startRibbonCut = () => {
     const tl = gsap.timeline();
 
     // Stage 1: Scissors grow & approach ribbon center
@@ -383,9 +514,17 @@ export default function App() {
 
   const handleReset = () => {
     setIsCut(false);
+    setIsAnimating(false);
+    setShowFlash(false);
     setShowCeremonyDetails(false);
-    gsap.set(['.ribbon-piece-left', '.ribbon-piece-right'], { xPercent: 0, rotation: 0, opacity: 1 });
-    gsap.set('.scissors-button', { scale: 1, opacity: 1 });
+    setCurtainOpen(false);
+    // Reset curtain panels
+    gsap.set(curtainLeftRef.current,  { xPercent: 0, x: 0 });
+    gsap.set(curtainRightRef.current, { xPercent: 0, x: 0 });
+    // Reset ribbon and scissors
+    gsap.set(['.ribbon-piece-left', '.ribbon-piece-right'], { xPercent: 0, rotation: 0, y: 0, opacity: 1 });
+    gsap.set('.scissors-button', { scale: 1, opacity: 1, y: 0 });
+    gsap.set('.scissors-icon', { rotate: 0, scale: 1 });
   };
 
   return (
@@ -394,7 +533,90 @@ export default function App() {
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a1526] text-slate-900 select-none"
       style={{ minHeight: '100svh' }}
     >
-      {/* 1. ULTRA-LUXURY FLUID SILK & GOLD BACKGROUND */}
+      {/* ══ FULL-SCREEN RED VELVET CURTAIN (PARDA) ══ */}
+      {!curtainOpen && (
+        <div className="absolute inset-0 z-50 pointer-events-none flex" aria-hidden="true">
+
+          {/* Top Pelmet / Valance bar */}
+          <div className="absolute top-0 left-0 right-0 z-10 h-10 sm:h-14" style={{
+            background: 'linear-gradient(180deg, #6b0010 0%, #8b0016 60%, #a50019 100%)',
+            borderBottom: '4px solid #f59e0b',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.6), 0 2px 0 rgba(255,200,0,0.3) inset'
+          }}>
+            {/* Pelmet gold trim decoration */}
+            <div className="absolute inset-x-0 bottom-0 flex justify-between px-6 sm:px-12">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div key={i} className="w-4 h-4 sm:w-5 sm:h-5 rounded-full" style={{
+                  background: 'radial-gradient(circle at 35% 35%, #fef08a, #d97706)',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.5)'
+                }} />
+              ))}
+            </div>
+          </div>
+
+          {/* LEFT curtain panel */}
+          <div
+            ref={curtainLeftRef}
+            className="absolute top-0 left-0 bottom-0 w-1/2 origin-left"
+            style={{
+              background: 'linear-gradient(180deg, #8b0016 0%, #6b0010 30%, #a50019 60%, #6b0010 80%, #8b0016 100%)',
+              backgroundImage: [
+                'linear-gradient(90deg, rgba(0,0,0,0.35) 0%, transparent 8%, rgba(255,255,255,0.04) 15%, transparent 22%, rgba(0,0,0,0.25) 35%, transparent 44%, rgba(255,255,255,0.03) 52%, transparent 60%, rgba(0,0,0,0.3) 75%, transparent 85%, rgba(0,0,0,0.2) 100%)',
+                'linear-gradient(180deg, #8b0016 0%, #6b0010 30%, #a50019 60%, #6b0010 80%, #8b0016 100%)'
+              ].join(', '),
+              borderRight: '3px solid rgba(251,191,36,0.55)',
+              boxShadow: '6px 0 40px rgba(0,0,0,0.55), inset -3px 0 20px rgba(0,0,0,0.4)'
+            }}
+          >
+            {/* Fabric fold lines */}
+            {[12, 28, 44, 62, 78].map((pct, i) => (
+              <div key={i} className="absolute top-0 bottom-0" style={{
+                left: `${pct}%`,
+                width: '2px',
+                background: `rgba(0,0,0,${0.15 + i * 0.04})`,
+                filter: 'blur(1px)'
+              }} />
+            ))}
+            {/* Gold fringe at right edge */}
+            <div className="absolute top-10 sm:top-14 right-0 bottom-0 w-3" style={{
+              background: 'repeating-linear-gradient(180deg, #f59e0b 0px, #d97706 4px, #f59e0b 8px, transparent 8px, transparent 12px)',
+              opacity: 0.7
+            }} />
+          </div>
+
+          {/* RIGHT curtain panel */}
+          <div
+            ref={curtainRightRef}
+            className="absolute top-0 right-0 bottom-0 w-1/2 origin-right"
+            style={{
+              background: 'linear-gradient(180deg, #8b0016 0%, #6b0010 30%, #a50019 60%, #6b0010 80%, #8b0016 100%)',
+              backgroundImage: [
+                'linear-gradient(90deg, rgba(0,0,0,0.2) 0%, transparent 15%, rgba(0,0,0,0.25) 28%, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 58%, rgba(0,0,0,0.3) 70%, transparent 82%, rgba(0,0,0,0.35) 100%)',
+                'linear-gradient(180deg, #8b0016 0%, #6b0010 30%, #a50019 60%, #6b0010 80%, #8b0016 100%)'
+              ].join(', '),
+              borderLeft: '3px solid rgba(251,191,36,0.55)',
+              boxShadow: '-6px 0 40px rgba(0,0,0,0.55), inset 3px 0 20px rgba(0,0,0,0.4)'
+            }}
+          >
+            {/* Fabric fold lines */}
+            {[18, 35, 52, 70, 88].map((pct, i) => (
+              <div key={i} className="absolute top-0 bottom-0" style={{
+                left: `${pct}%`,
+                width: '2px',
+                background: `rgba(0,0,0,${0.12 + i * 0.04})`,
+                filter: 'blur(1px)'
+              }} />
+            ))}
+            {/* Gold fringe at left edge */}
+            <div className="absolute top-10 sm:top-14 left-0 bottom-0 w-3" style={{
+              background: 'repeating-linear-gradient(180deg, #f59e0b 0px, #d97706 4px, #f59e0b 8px, transparent 8px, transparent 12px)',
+              opacity: 0.7
+            }} />
+          </div>
+
+        </div>
+      )}
+
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
         <img
           ref={bgImgRef}
@@ -403,13 +625,60 @@ export default function App() {
           className="w-full h-full object-cover object-center transform scale-105 filter brightness-[1.02] contrast-[1.03]"
         />
 
-        {/* Soft Radial Ambient Center Illumination */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0.70) 45%, rgba(10, 21, 38, 0.4) 100%)'
-          }}
-        />
+        {/* ── ANIMATED GOLDEN ORB 1 — large warm glow, top-left ── */}
+        <div ref={orb1Ref} className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full pointer-events-none" style={{
+          background: 'radial-gradient(circle at 40% 40%, rgba(251,191,36,0.38) 0%, rgba(217,119,6,0.18) 45%, transparent 70%)',
+          filter: 'blur(48px)'
+        }} />
+
+        {/* ── ANIMATED ORB 2 — rose accent, top-right ── */}
+        <div ref={orb2Ref} className="absolute -top-20 -right-24 w-[380px] h-[380px] rounded-full pointer-events-none" style={{
+          background: 'radial-gradient(circle at 60% 35%, rgba(244,63,94,0.22) 0%, rgba(251,113,133,0.1) 50%, transparent 72%)',
+          filter: 'blur(56px)'
+        }} />
+
+        {/* ── ANIMATED ORB 3 — blue/indigo deep, bottom ── */}
+        <div ref={orb3Ref} className="absolute -bottom-28 left-1/4 w-[450px] h-[450px] rounded-full pointer-events-none" style={{
+          background: 'radial-gradient(circle at 50% 60%, rgba(99,102,241,0.22) 0%, rgba(59,130,246,0.12) 50%, transparent 72%)',
+          filter: 'blur(60px)'
+        }} />
+
+        {/* ── ROTATING LIGHT RAY ── */}
+        <div ref={rayRef} className="absolute inset-0 pointer-events-none" style={{ transformOrigin: '50% 50%' }}>
+          <div style={{
+            position: 'absolute',
+            top: '50%', left: '50%',
+            width: '140%', height: '3px',
+            marginLeft: '-70%', marginTop: '-1.5px',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(251,191,36,0.18) 35%, rgba(255,255,255,0.28) 50%, rgba(251,191,36,0.18) 65%, transparent 100%)',
+            filter: 'blur(2px)',
+            borderRadius: '999px'
+          }} />
+          <div style={{
+            position: 'absolute',
+            top: '50%', left: '50%',
+            width: '110%', height: '2px',
+            marginLeft: '-55%', marginTop: '-1px',
+            transform: 'rotate(72deg)',
+            transformOrigin: 'center',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(251,191,36,0.12) 40%, rgba(255,255,255,0.18) 50%, rgba(251,191,36,0.12) 60%, transparent 100%)',
+            filter: 'blur(1.5px)',
+            borderRadius: '999px'
+          }} />
+        </div>
+
+        {/* ── RADIAL HALO PULSE — center illumination ── */}
+        <div ref={haloRef} className="absolute inset-0 pointer-events-none" style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.68) 38%, rgba(255,220,100,0.12) 65%, rgba(10,21,38,0.35) 100%)'
+        }} />
+
+        {/* ── HORIZONTAL SHIMMER SWEEP ── */}
+        <div ref={shimmerRef} className="absolute inset-0 pointer-events-none" style={{
+          background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.22) 48%, rgba(251,191,36,0.12) 52%, transparent 80%)',
+          width: '60%',
+          left: 0
+        }} />
+
       </div>
 
       {/* 2. REAL-TIME FLOATING GOLD DUST PARTICLES */}
