@@ -322,13 +322,8 @@ export default function App() {
       onComplete: () => startRibbonCut()
     });
 
-    // Shake curtain first (dramatic tension)
+    // Immediately part apart dramatically
     curtainTl
-      .to([curtainLeftRef.current, curtainRightRef.current], {
-        x: (i) => i === 0 ? -10 : 10,
-        duration: 0.1, ease: 'power1.inOut', repeat: 3, yoyo: true
-      })
-      // Then part apart dramatically
       .to(curtainLeftRef.current, {
         xPercent: -100,
         duration: 1.4,
