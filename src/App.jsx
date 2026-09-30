@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import confetti from 'canvas-confetti';
 import { 
@@ -9,10 +9,98 @@ import {
   RotateCcw, 
   Calendar, 
   Clock, 
-  BookOpen,
-  Sparkle
+  BookOpen
 } from 'lucide-react';
 import { JOURNAL_INFO } from './data/journalData';
+
+// Interactive Floating Golden Star & Confetti Particles Canvas
+function GoldenAtmosphereCanvas() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const handleResize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    const particles = Array.from({ length: 30 }).map(() => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 3 + 1.2,
+      speedX: (Math.random() - 0.45) * 0.4,
+      speedY: -(Math.random() * 0.4 + 0.15),
+      opacity: Math.random() * 0.5 + 0.25,
+      pulse: Math.random() * Math.PI * 2,
+      pulseSpeed: Math.random() * 0.02 + 0.01,
+      rotation: Math.random() * Math.PI * 2,
+      rotationSpeed: (Math.random() - 0.5) * 0.015,
+      isFoil: Math.random() > 0.6
+    }));
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((p) => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.rotation += p.rotationSpeed;
+        p.pulse += p.pulseSpeed;
+        const currentOpacity = p.opacity + Math.sin(p.pulse) * 0.2;
+
+        if (p.y < -20) {
+          p.y = height + 10;
+          p.x = Math.random() * width;
+        }
+        if (p.x < -20) p.x = width + 10;
+        if (p.x > width + 20) p.x = -10;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+
+        if (p.isFoil) {
+          ctx.fillStyle = `rgba(217, 119, 6, ${Math.max(0.15, Math.min(0.8, currentOpacity))})`;
+          ctx.fillRect(-p.size, -p.size * 0.6, p.size * 2, p.size * 1.2);
+        } else {
+          const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 2);
+          grad.addColorStop(0, `rgba(254, 240, 138, ${Math.max(0.2, currentOpacity)})`);
+          grad.addColorStop(1, 'rgba(217, 119, 6, 0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size * 1.6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      });
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="absolute inset-0 pointer-events-none z-10 w-full h-full"
+    />
+  );
+}
 
 export default function App() {
   const containerRef = useRef(null);
@@ -30,31 +118,31 @@ export default function App() {
         return;
       }
 
-      // Initial clean state
+      // Initial clean state for foreground text
       gsap.set('[data-animate]', {
         opacity: 0,
-        y: 28,
+        y: 26,
         willChange: 'transform, opacity'
       });
 
-      // Background gentle zoom & breathing float
+      // 1. Fluid Silk Background Entrance & Breathing Wave Motion
       if (bgImgRef.current) {
         gsap.fromTo(bgImgRef.current, 
-          { scale: 1.08, opacity: 0.9 },
-          { scale: 1.02, opacity: 1, duration: 1.8, ease: 'power2.out' }
+          { scale: 1.14, opacity: 0.85 },
+          { scale: 1.04, opacity: 1, duration: 2.0, ease: 'expo.out' }
         );
 
-        // Continuous subtle slow ambient breathing on background
+        // Continuous slow wave breathing
         gsap.to(bgImgRef.current, {
-          scale: 1.05,
-          duration: 12,
+          scale: 1.08,
+          duration: 14,
           repeat: -1,
           yoyo: true,
           ease: 'sine.inOut'
         });
       }
 
-      // Staggered sequence for clean single entrance
+      // 2. Cascading Foreground Sequence
       const tl = gsap.timeline({
         defaults: { ease: 'power3.out', duration: 1.0 }
       });
@@ -67,36 +155,12 @@ export default function App() {
         .to('[data-animate="date-pill"]', { opacity: 1, y: 0, duration: 0.9 }, '-=0.6')
         .to('[data-animate="footer"]', { opacity: 1, y: 0 }, '-=0.5');
 
-      // Continuous floating gold shimmer particles
-      gsap.to('.floating-particle-1', {
-        y: -30,
-        x: 12,
-        rotation: 180,
-        opacity: 0.8,
-        duration: 4.5,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut'
-      });
-
-      gsap.to('.floating-particle-2', {
-        y: -25,
-        x: -15,
-        rotation: -180,
-        opacity: 0.7,
-        duration: 5.2,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        delay: 0.8
-      });
-
-      // Subtle pulse on scissors button
+      // 3. Scissors Button Breathing Pulse
       if (scissorsBtnRef.current) {
         gsap.to(scissorsBtnRef.current, {
           scale: 1.04,
-          boxShadow: '0 10px 30px rgba(202, 138, 4, 0.55)',
-          duration: 1.4,
+          boxShadow: '0 10px 30px rgba(180, 83, 9, 0.6), 0 0 15px rgba(245, 158, 11, 0.9)',
+          duration: 1.3,
           repeat: -1,
           yoyo: true,
           ease: 'sine.inOut'
@@ -105,17 +169,17 @@ export default function App() {
 
     }, containerRef);
 
-    // Interactive subtle mouse parallax depth
+    // 4. Interactive 3D Mouse Parallax
     const handleMouseMove = (e) => {
       if (prefersReducedMotion || !bgImgRef.current) return;
       const { innerWidth, innerHeight } = window;
-      const xPercent = (e.clientX / innerWidth - 0.5) * 18;
-      const yPercent = (e.clientY / innerHeight - 0.5) * 18;
+      const xPercent = (e.clientX / innerWidth - 0.5) * 20;
+      const yPercent = (e.clientY / innerHeight - 0.5) * 20;
 
       gsap.to(bgImgRef.current, {
         x: xPercent,
         y: yPercent,
-        duration: 2.0,
+        duration: 2.2,
         ease: 'power1.out',
         overwrite: 'auto'
       });
@@ -133,7 +197,6 @@ export default function App() {
     if (isCut) return;
     setIsCut(true);
 
-    // Smooth ribbon parting animation
     gsap.to('.ribbon-piece-left', {
       xPercent: -125,
       rotation: -18,
@@ -164,9 +227,8 @@ export default function App() {
       }
     });
 
-    // Celebratory confetti burst
     const end = Date.now() + 3.5 * 1000;
-    const colors = ['#ca8a04', '#eab308', '#0284c7', '#0f172a', '#10b981'];
+    const colors = ['#b45309', '#f59e0b', '#0284c7', '#0f172a', '#10b981'];
 
     (function frame() {
       confetti({
@@ -207,101 +269,96 @@ export default function App() {
   return (
     <main
       ref={containerRef}
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#071326] text-slate-900 select-none"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a1526] text-slate-900 select-none"
       style={{ minHeight: '100svh' }}
     >
-      {/* 1. CRYSTAL CLEAR HD BACKGROUND IMAGE (No heavy blur, crisp architecture) */}
+      {/* 1. ULTRA-LUXURY FLUID SILK & GOLD BACKGROUND */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
         <img 
           ref={bgImgRef}
-          src="/grand-library.jpg" 
-          alt="Grand Academic Library Background" 
+          src="/luxury-silk-bg.jpg" 
+          alt="Luxury Fluid Silk & Gold Inauguration Background" 
           className="w-full h-full object-cover object-center transform scale-105 filter brightness-[1.02] contrast-[1.03]"
         />
         
-        {/* Soft, Light Central Illumination (Leaves the library architecture completely clear & unblurred) */}
+        {/* Soft Radial Ambient Center Illumination */}
         <div 
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.45) 45%, rgba(10, 25, 50, 0.25) 100%)'
+            background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0.70) 45%, rgba(10, 21, 38, 0.4) 100%)'
           }}
         />
-
-        {/* Floating Golden Confetti / Star Particles */}
-        <div className="floating-particle-1 absolute top-[25%] left-[18%] text-amber-500 opacity-60">
-          <Sparkle className="w-6 h-6 fill-amber-400" />
-        </div>
-        <div className="floating-particle-2 absolute bottom-[30%] right-[18%] text-amber-500 opacity-60">
-          <Sparkles className="w-7 h-7" />
-        </div>
       </div>
 
-      {/* 2. FOREGROUND EDITORIAL CONTENT */}
-      <div className="relative z-10 max-w-4xl w-full mx-auto text-center flex flex-col items-center justify-center px-4 sm:px-6 py-6">
+      {/* 2. REAL-TIME FLOATING GOLD DUST PARTICLES */}
+      <GoldenAtmosphereCanvas />
+
+      {/* 3. FOREGROUND EDITORIAL CONTENT */}
+      <div className="relative z-20 max-w-4xl w-full mx-auto text-center flex flex-col items-center justify-center px-4 sm:px-6 py-5">
         
-        {/* Crisp Logo Container with Deep Navy Contrast */}
+        {/* Official University & Journal Logo */}
         <div 
           data-animate="logo"
-          className="mb-3.5 flex flex-col items-center justify-center"
+          className="mb-3 flex flex-col items-center justify-center"
         >
-          <div className="px-6 py-3 rounded-2xl bg-[#06152d] border-2 border-amber-400/70 shadow-2xl shadow-slate-950/30">
+          <div className="px-6 py-2.5 rounded-2xl bg-[#06152d] border-2 border-amber-400 shadow-2xl shadow-slate-950/40">
             <img 
               src="/logo.png" 
-              alt="IJSPAST Logo" 
-              className="h-12 sm:h-16 md:h-18 w-auto max-w-[85vw] sm:max-w-[450px] object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.2)]"
+              alt="Shri Ramswaroop Memorial University" 
+              className="h-12 sm:h-16 md:h-18 w-auto max-w-[85vw] sm:max-w-[450px] object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.25)]"
             />
           </div>
         </div>
 
-        {/* INAUGURATION CEREMONY Tag with Diamond Accent Lines */}
+        {/* INAUGURATION CEREMONY Tag with Diamond Lines */}
         <div 
           data-animate="badge"
-          className="flex items-center justify-center gap-3 w-full max-w-md my-1.5"
+          className="flex items-center justify-center gap-3 w-full max-w-md my-1"
         >
-          <div className="h-[1.5px] flex-1 bg-gradient-to-r from-transparent to-amber-700" />
-          <span className="text-[11px] sm:text-xs font-bold tracking-[0.28em] uppercase text-amber-950 font-mono-tech flex items-center gap-2 drop-shadow-sm">
-            <span>◇</span>
+          <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-amber-800" />
+          <span className="text-xs sm:text-sm font-bold tracking-[0.28em] uppercase text-amber-950 font-mono-tech flex items-center gap-2 drop-shadow-sm">
+            <span className="text-amber-700">◇</span>
             <span>INAUGURATION CEREMONY</span>
-            <span>◇</span>
+            <span className="text-amber-700">◇</span>
           </span>
-          <div className="h-[1.5px] flex-1 bg-gradient-to-l from-transparent to-amber-700" />
+          <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-amber-800" />
         </div>
 
-        {/* Headline: "A New Chapter in Scholarly Research" */}
-        <div data-animate="title" className="my-1.5">
-          <h1 className="font-serif-academic text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#061733] leading-[1.08] drop-shadow-sm">
+        {/* High-Contrast Bold Headline */}
+        <div data-animate="title" className="my-1">
+          <h1 className="font-serif-academic text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#071936] leading-[1.08] drop-shadow-sm">
             A New Chapter in
           </h1>
-          <h2 className="font-serif-academic text-4xl sm:text-6xl md:text-7xl font-bold italic tracking-tight text-gold-banner leading-[1.08] mt-1 drop-shadow-sm">
+          <h2 className="font-serif-academic text-4xl sm:text-6xl md:text-7xl font-bold italic tracking-tight text-[#a16207] leading-[1.08] mt-1 drop-shadow-sm">
             Scholarly Research
           </h2>
         </div>
 
         {/* Centerpiece Accent Divider */}
-        <div className="flex items-center justify-center gap-2 my-1.5 opacity-90">
-          <div className="h-[1.5px] w-14 bg-amber-700" />
-          <div className="w-2 h-2 rotate-45 border border-amber-700 bg-amber-300" />
-          <div className="h-[1.5px] w-14 bg-amber-700" />
+        <div className="flex items-center justify-center gap-2 my-1 opacity-90">
+          <div className="h-[2px] w-14 bg-amber-800" />
+          <div className="w-2 h-2 rotate-45 border-2 border-amber-800 bg-amber-400" />
+          <div className="h-[2px] w-14 bg-amber-800" />
         </div>
 
         {/* Description Text */}
         <p 
           data-animate="subtitle"
-          className="text-sm sm:text-base md:text-lg font-medium text-slate-800 tracking-wide max-w-2xl mb-5 font-sans leading-relaxed drop-shadow-sm"
+          className="text-base sm:text-lg md:text-xl font-semibold text-slate-800 tracking-wide max-w-2xl mb-4 font-sans leading-relaxed drop-shadow-sm"
         >
           IJSPAST is set to begin its journey, creating a global platform for innovative research and meaningful academic dialogue.
         </p>
 
-        {/* 3. Interactive Ribbon Cutting Ceremony Stage */}
+        {/* 4. Interactive Ribbon Cutting Ceremony Stage */}
         <div 
           data-animate="ribbon-box"
-          className="relative w-full max-w-2xl glass-banner-card rounded-3xl p-5 sm:p-7 mb-5 overflow-hidden shadow-2xl"
+          className="relative w-full max-w-2xl bg-white/95 border-2 border-amber-500/60 rounded-3xl p-5 sm:p-6 mb-4 overflow-hidden shadow-2xl backdrop-blur-md"
         >
           {/* Golden Satin Ribbon */}
           <div className="relative w-full flex items-center justify-center py-4 my-1 overflow-hidden">
             
             {/* Left Satin Ribbon */}
-            <div className="ribbon-piece-left w-1/2 h-12 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-300 border-t border-b border-amber-100 shadow-md flex items-center justify-end pr-5 text-slate-950 font-bold font-serif-academic text-xs sm:text-sm tracking-widest origin-left">
+            <div className="ribbon-piece-left w-1/2 h-12 bg-gradient-to-r from-amber-700 via-amber-500 to-amber-300 border-t-2 border-b-2 border-amber-100 shadow-md flex items-center justify-end pr-5 text-slate-950 font-bold font-serif-academic text-xs sm:text-sm tracking-widest origin-left">
               <span>OFFICIAL</span>
             </div>
 
@@ -316,14 +373,14 @@ export default function App() {
                 <span>Cut Ribbon to Inaugurate</span>
               </button>
             ) : (
-              <div className="absolute z-30 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-500 text-emerald-800 flex items-center gap-2 text-xs font-semibold tracking-wider shadow-md">
+              <div className="absolute z-30 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-500 text-emerald-800 flex items-center gap-2 text-xs font-bold tracking-wider shadow-md">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                 <span>Officially Inaugurated</span>
               </div>
             )}
 
             {/* Right Satin Ribbon */}
-            <div className="ribbon-piece-right w-1/2 h-12 bg-gradient-to-r from-amber-300 via-amber-500 to-amber-600 border-t border-b border-amber-100 shadow-md flex items-center justify-start pl-5 text-slate-950 font-bold font-serif-academic text-xs sm:text-sm tracking-widest origin-right">
+            <div className="ribbon-piece-right w-1/2 h-12 bg-gradient-to-r from-amber-300 via-amber-500 to-amber-700 border-t-2 border-b-2 border-amber-100 shadow-md flex items-center justify-start pl-5 text-slate-950 font-bold font-serif-academic text-xs sm:text-sm tracking-widest origin-right">
               <span>INAUGURATION</span>
             </div>
           </div>
@@ -350,26 +407,26 @@ export default function App() {
               </button>
             </div>
           ) : (
-            <p className="text-[11px] sm:text-xs text-slate-600 tracking-wider mt-1.5 font-medium">
+            <p className="text-xs text-slate-700 font-semibold tracking-wider mt-1.5">
               ✦ Click on the scissors button to perform the official ribbon-cutting ceremony ✦
             </p>
           )}
         </div>
 
-        {/* 4. Elegant Date Pill */}
+        {/* 5. Date Pill */}
         <div 
           data-animate="date-pill"
-          className="inline-flex items-center gap-4 px-8 py-3 rounded-full bg-white/95 border-2 border-amber-400/80 shadow-lg backdrop-blur-md mb-4"
+          className="inline-flex items-center gap-4 px-8 py-2.5 rounded-full bg-white border-2 border-amber-500 shadow-xl mb-3.5"
         >
-          <div className="p-2 rounded-lg bg-amber-500/15 text-amber-700">
+          <div className="p-2 rounded-lg bg-amber-500/20 text-amber-800">
             <Calendar className="w-5 h-5" />
           </div>
           <div className="text-left pr-2">
-            <span className="font-serif-academic text-2xl sm:text-3xl font-bold text-[#061733] tracking-widest block">
+            <span className="font-serif-academic text-2xl sm:text-3xl font-bold text-[#071936] tracking-widest block">
               01 • 01 • 2026
             </span>
-            <span className="text-[10px] sm:text-xs text-slate-600 font-semibold tracking-wide flex items-center gap-1">
-              <Clock className="w-3 h-3 text-amber-600 inline" />
+            <span className="text-xs font-bold text-slate-700 tracking-wide flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-amber-700 inline" />
               <span>Time will be announced</span>
             </span>
           </div>
@@ -380,8 +437,8 @@ export default function App() {
           data-animate="footer"
           className="text-center"
         >
-          <p className="text-xs text-slate-600 font-medium tracking-wider flex items-center justify-center gap-2">
-            <BookOpen className="w-3.5 h-3.5 text-amber-600 inline" />
+          <p className="text-xs sm:text-sm text-slate-900 font-bold tracking-wider flex items-center justify-center gap-2 drop-shadow-sm bg-white/80 px-4 py-1 rounded-full border border-slate-200">
+            <BookOpen className="w-4 h-4 text-amber-700 inline" />
             <span>International Journal of Scientific Progress in Applied Science and Technology (IJSPAST)</span>
           </p>
         </div>
