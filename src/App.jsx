@@ -18,9 +18,11 @@ import {
   BellRing,
   Sparkle
 } from 'lucide-react';
+import { JOURNAL_INFO } from './data/journalData';
 
 export default function App() {
   const compRef = useRef(null);
+  const logoRef = useRef(null);
   const [isCut, setIsCut] = useState(false);
   const [showCeremonyDetails, setShowCeremonyDetails] = useState(false);
 
@@ -29,7 +31,7 @@ export default function App() {
 
     const ctx = gsap.context(() => {
       if (prefersReducedMotion) {
-        gsap.set('[data-animate]', { opacity: 1, y: 0 });
+        gsap.set('[data-animate]', { opacity: 1, y: 0, scale: 1 });
         gsap.set('.celebration-vector', { opacity: 0.7 });
         return;
       }
@@ -40,7 +42,44 @@ export default function App() {
         y: 20,
       });
 
-      // 1. UNIQUE ANIMATION FOR CELEBRATION VECTOR 1: Party Popper (Burst & Swing)
+      // Special initial state for Logo
+      gsap.set(logoRef.current, {
+        opacity: 0,
+        scale: 0.88,
+        y: 20
+      });
+
+      // --- LOGO ATTRACTIVE GSAP ANIMATION ---
+      // 1. Entrance with smooth elastic/back effect
+      gsap.to(logoRef.current, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 1.2,
+        ease: 'back.out(1.5)',
+        delay: 0.25
+      });
+
+      // 2. Continuous elegant gentle levitation & subtle gold glow shimmer for logo badge
+      gsap.to(logoRef.current, {
+        y: -6,
+        duration: 3.2,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: 1.5
+      });
+
+      gsap.to('.logo-glow-effect', {
+        opacity: 0.8,
+        scale: 1.08,
+        duration: 2.8,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      });
+
+      // --- DISTINCT ANIMATIONS FOR CELEBRATION VECTORS ---
       gsap.to('.vector-party-popper', {
         rotation: 20,
         y: -16,
@@ -51,7 +90,6 @@ export default function App() {
         ease: 'power1.inOut'
       });
 
-      // 2. UNIQUE ANIMATION FOR CELEBRATION VECTOR 2: Golden Crown (Majestic Float & Tilt)
       gsap.to('.vector-crown', {
         y: -22,
         rotation: -12,
@@ -61,7 +99,6 @@ export default function App() {
         ease: 'sine.inOut'
       });
 
-      // 3. UNIQUE ANIMATION FOR CELEBRATION VECTOR 3: Celebration Gift Box (Excited Jump & Jiggle)
       gsap.to('.vector-gift', {
         y: -14,
         scale: 1.12,
@@ -72,7 +109,6 @@ export default function App() {
         ease: 'elastic.out(1, 0.4)'
       });
 
-      // 4. UNIQUE ANIMATION FOR CELEBRATION VECTOR 4: Inauguration Diya / Flame (Flicker & Glow pulse)
       gsap.to('.vector-flame', {
         scaleY: 1.25,
         scaleX: 0.92,
@@ -83,7 +119,6 @@ export default function App() {
         ease: 'sine.inOut'
       });
 
-      // 5. UNIQUE ANIMATION FOR CELEBRATION VECTOR 5: Celebration Bell (Ringing Pendulum Swing)
       gsap.to('.vector-bell', {
         rotation: 25,
         transformOrigin: 'top center',
@@ -93,7 +128,6 @@ export default function App() {
         ease: 'sine.inOut'
       });
 
-      // 6. UNIQUE ANIMATION FOR CELEBRATION VECTOR 6: Golden Award Medal (3D Flip & Float)
       gsap.to('.vector-award', {
         rotationY: 45,
         y: -18,
@@ -103,7 +137,6 @@ export default function App() {
         ease: 'power2.inOut'
       });
 
-      // 7. UNIQUE ANIMATION FOR CELEBRATION VECTOR 7 & 8: Twinkling Starlight & Sparkles
       gsap.to('.vector-sparkle-1', {
         scale: 1.4,
         rotation: 180,
@@ -135,7 +168,7 @@ export default function App() {
         ease: 'sine.inOut'
       });
 
-      // Single entrance sequence
+      // Main typography & cards single entrance timeline
       const tl = gsap.timeline({
         defaults: {
           ease: 'power3.out',
@@ -144,8 +177,7 @@ export default function App() {
       });
 
       tl.to('[data-animate="badge"]', { opacity: 1, y: 0, delay: 0.1 })
-        .to('[data-animate="logo"]', { opacity: 1, y: 0 }, '-=0.55')
-        .to('[data-animate="title"]', { opacity: 1, y: 0, duration: 0.95 }, '-=0.55')
+        .to('[data-animate="title"]', { opacity: 1, y: 0, duration: 0.95 }, '-=0.5')
         .to('[data-animate="subtitle"]', { opacity: 1, y: 0 }, '-=0.6')
         .to('[data-animate="ribbon-box"]', { opacity: 1, y: 0, duration: 0.9 }, '-=0.5')
         .to('[data-animate="meta"]', { opacity: 1, y: 0 }, '-=0.5')
@@ -291,12 +323,12 @@ export default function App() {
       </div>
 
       {/* 2. Main Single Screen Content Container */}
-      <div className="relative z-10 max-w-4xl w-full mx-auto text-center flex flex-col items-center justify-center py-6 sm:py-10">
+      <div className="relative z-10 max-w-4xl w-full mx-auto text-center flex flex-col items-center justify-center py-6 sm:py-8">
         
         {/* Academic Celebration Badge */}
         <div 
           data-animate="badge"
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/50 bg-white/90 backdrop-blur-md mb-4 shadow-sm text-amber-900"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/50 bg-white/90 backdrop-blur-md mb-3 shadow-sm text-amber-900"
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-600" />
           <span className="text-[10px] sm:text-xs font-semibold tracking-[0.22em] uppercase font-mono-tech">
@@ -304,16 +336,20 @@ export default function App() {
           </span>
         </div>
 
-        {/* Existing IJSPAST Logo */}
+        {/* ENHANCED PROMINENT LOGO SHOWCASE WITH ATTRACTIVE GSAP ANIMATION */}
         <div 
-          data-animate="logo"
-          className="mb-3 flex flex-col items-center justify-center"
+          ref={logoRef}
+          className="relative mb-4 flex flex-col items-center justify-center"
         >
-          <div className="p-2.5 rounded-2xl bg-white/95 border border-amber-300/60 shadow-xl shadow-amber-900/5 backdrop-blur-md">
+          {/* Subtle Ambient Gold Aura behind Logo */}
+          <div className="logo-glow-effect absolute -inset-2 bg-gradient-to-r from-amber-400/20 via-yellow-300/30 to-amber-500/20 rounded-2xl blur-lg pointer-events-none opacity-40" />
+
+          {/* Premium High-Contrast Container ensuring all logo colors & white text are 100% crisp */}
+          <div className="relative flex items-center justify-center px-6 py-3 rounded-2xl bg-gradient-to-b from-[#091b38] to-[#050e1f] border-2 border-amber-400/60 shadow-2xl shadow-navy-950/25 transition-transform duration-300 hover:scale-[1.03]">
             <img 
               src="/logo.png" 
-              alt="IJSPAST Logo" 
-              className="h-12 sm:h-16 md:h-18 w-auto object-contain drop-shadow"
+              alt="SRMU - International Journal of Scientific Progress in Applied Science and Technology" 
+              className="h-14 sm:h-18 md:h-20 w-auto max-w-[85vw] sm:max-w-[480px] object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]"
             />
           </div>
         </div>
@@ -337,7 +373,7 @@ export default function App() {
         {/* Ribbon Cutting (Fita Ceremony) Box in Light Theme */}
         <div 
           data-animate="ribbon-box"
-          className="relative w-full max-w-2xl rounded-2xl bg-white/95 border border-amber-400/50 p-5 sm:p-7 shadow-xl shadow-amber-950/5 backdrop-blur-xl mb-6 overflow-hidden"
+          className="relative w-full max-w-2xl rounded-2xl bg-white/95 border border-amber-400/50 p-5 sm:p-7 shadow-xl shadow-amber-950/5 backdrop-blur-xl mb-5 overflow-hidden"
         >
           {/* Golden Satin Ribbon */}
           <div className="relative w-full flex items-center justify-center py-4 my-1">
@@ -372,7 +408,7 @@ export default function App() {
           {showCeremonyDetails ? (
             <div className="mt-4 pt-3 border-t border-slate-200 flex flex-wrap items-center justify-center gap-3">
               <a
-                href="https://srmu.ac.in"
+                href={JOURNAL_INFO.portalUrl || "https://srmu-journal.netlify.app/"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-1.5 shadow-md hover:scale-105"
@@ -396,14 +432,14 @@ export default function App() {
           )}
         </div>
 
-        {/* Date Schedule Card Only (Clean Centered Display) */}
+        {/* Date Schedule Card */}
         <div 
           data-animate="meta"
-          className="flex items-center justify-center mb-6"
+          className="flex items-center justify-center mb-5"
         >
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-white/90 border border-amber-300/60 shadow-sm backdrop-blur-md">
+          <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-xl bg-white/90 border border-amber-300/60 shadow-sm backdrop-blur-md">
             <div className="p-2 rounded-lg bg-amber-500/10 text-amber-700">
-              <Calendar className="w-5 h-5" />
+              <Calendar className="w-4 h-4" />
             </div>
             <div className="text-left">
               <span className="block text-[9px] tracking-wider uppercase text-slate-500 font-semibold font-mono-tech">Inauguration Date</span>
