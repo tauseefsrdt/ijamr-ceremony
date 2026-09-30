@@ -2,7 +2,7 @@
 
 @layer base {
   :root {
-    --color-bg: #fdfbf7;
+    --color-bg: #fcf9f2;
     --color-ivory: #ffffff;
     --color-navy: #0f274a;
     --color-gold: #b45309;
@@ -32,26 +32,67 @@
   }
 }
 
-/* Light Theme Golden & Royal Text Gradients */
-.text-gold-gradient {
-  background: linear-gradient(135deg, #92400e 0%, #b45309 30%, #d97706 60%, #78350f 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Luxury Academic Gold Metallic Gradient with Animated Shine */
+@keyframes goldShine {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.text-navy-gradient {
-  background: linear-gradient(180deg, #091931 0%, #172554 60%, #1e3a8a 100%);
+.text-gold-luxury {
+  background: linear-gradient(
+    120deg,
+    #78350f 0%,
+    #b45309 25%,
+    #f59e0b 50%,
+    #b45309 75%,
+    #78350f 100%
+  );
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: goldShine 5s linear infinite;
+  text-shadow: 0 4px 15px rgba(217, 119, 6, 0.12);
 }
 
-/* Premium Light Glassmorphism */
-.bg-glass-light {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(217, 119, 6, 0.25);
-  box-shadow: 0 20px 40px -15px rgba(217, 119, 6, 0.12), 0 0 30px rgba(15, 39, 74, 0.04);
+.text-navy-luxury {
+  background: linear-gradient(180deg, #050d1a 0%, #0b1f3d 40%, #1e3a8a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 10px rgba(11, 31, 61, 0.08);
+}
+
+.text-subtle-glow {
+  filter: drop-shadow(0 2px 8px rgba(217, 119, 6, 0.18));
+}
+
+/* Shimmering Light Sweep Effect */
+@keyframes lightSweep {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  100% { transform: translateX(200%) rotate(25deg); }
+}
+
+.shimmer-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-sweep::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  animation: lightSweep 5s infinite ease-in-out;
+  pointer-events: none;
 }
 
 /* Reduced Motion preferences */

@@ -23,6 +23,8 @@ import { JOURNAL_INFO } from './data/journalData';
 export default function App() {
   const compRef = useRef(null);
   const logoRef = useRef(null);
+  const titleRef = useRef(null);
+  const scissorsBtnRef = useRef(null);
   const [isCut, setIsCut] = useState(false);
   const [showCeremonyDetails, setShowCeremonyDetails] = useState(false);
 
@@ -39,51 +41,53 @@ export default function App() {
       // Initial clean state for main content
       gsap.set('[data-animate]', {
         opacity: 0,
-        y: 20,
+        y: 24,
       });
 
       // Special initial state for Logo
       gsap.set(logoRef.current, {
         opacity: 0,
-        scale: 0.88,
-        y: 20
+        scale: 0.82,
+        y: 25,
+        rotationX: 15
       });
 
-      // --- LOGO ATTRACTIVE GSAP ANIMATION ---
-      // 1. Entrance with smooth elastic/back effect
+      // --- 1. ATTRACTIVE GSAP LOGO ENTRANCE & CONTINUOUS LEVITATION ---
       gsap.to(logoRef.current, {
         opacity: 1,
         scale: 1,
         y: 0,
-        duration: 1.2,
-        ease: 'back.out(1.5)',
-        delay: 0.25
+        rotationX: 0,
+        duration: 1.3,
+        ease: 'back.out(1.6)',
+        delay: 0.2
       });
 
-      // 2. Continuous elegant gentle levitation & subtle gold glow shimmer for logo badge
+      // Gentle floating levitation for the logo
       gsap.to(logoRef.current, {
-        y: -6,
-        duration: 3.2,
+        y: -7,
+        duration: 3,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut',
         delay: 1.5
       });
 
+      // Pulsing golden aura behind logo
       gsap.to('.logo-glow-effect', {
-        opacity: 0.8,
-        scale: 1.08,
-        duration: 2.8,
+        opacity: 0.85,
+        scale: 1.12,
+        duration: 2.5,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut'
       });
 
-      // --- DISTINCT ANIMATIONS FOR CELEBRATION VECTORS ---
+      // --- 2. ATTRACTIVE CONTINUOUS VECTOR ANIMATIONS ---
       gsap.to('.vector-party-popper', {
-        rotation: 20,
-        y: -16,
-        scale: 1.1,
+        rotation: 22,
+        y: -18,
+        scale: 1.12,
         duration: 2.2,
         repeat: -1,
         yoyo: true,
@@ -100,62 +104,83 @@ export default function App() {
       });
 
       gsap.to('.vector-gift', {
-        y: -14,
-        scale: 1.12,
+        y: -15,
+        scale: 1.15,
         rotation: 8,
-        duration: 2.6,
+        duration: 2.5,
         repeat: -1,
         yoyo: true,
         ease: 'elastic.out(1, 0.4)'
       });
 
       gsap.to('.vector-flame', {
-        scaleY: 1.25,
-        scaleX: 0.92,
-        opacity: 0.8,
-        duration: 1.4,
+        scaleY: 1.28,
+        scaleX: 0.9,
+        opacity: 0.85,
+        duration: 1.2,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut'
       });
 
       gsap.to('.vector-bell', {
-        rotation: 25,
+        rotation: 28,
         transformOrigin: 'top center',
-        duration: 1.6,
+        duration: 1.5,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut'
       });
 
       gsap.to('.vector-award', {
-        rotationY: 45,
+        rotationY: 50,
         y: -18,
-        duration: 4.2,
+        duration: 3.8,
         repeat: -1,
         yoyo: true,
         ease: 'power2.inOut'
       });
 
       gsap.to('.vector-sparkle-1', {
-        scale: 1.4,
+        scale: 1.5,
         rotation: 180,
-        opacity: 0.9,
-        duration: 2.8,
+        opacity: 0.95,
+        duration: 2.6,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut'
       });
 
       gsap.to('.vector-sparkle-2', {
-        scale: 0.6,
+        scale: 0.55,
         rotation: -180,
-        opacity: 0.3,
-        duration: 2.4,
+        opacity: 0.35,
+        duration: 2.2,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut',
-        delay: 0.4
+        delay: 0.3
+      });
+
+      // --- 3. ATTRACTIVE PULSING CALL-TO-ACTION FOR SCISSORS BUTTON ---
+      if (scissorsBtnRef.current) {
+        gsap.to(scissorsBtnRef.current, {
+          boxShadow: '0 0 35px rgba(217, 119, 6, 0.6), 0 0 15px rgba(245, 158, 11, 0.8)',
+          scale: 1.04,
+          duration: 1.4,
+          repeat: -1,
+          yoyo: true,
+          ease: 'power1.inOut'
+        });
+      }
+
+      // Satin Ribbon Glisten Sweep
+      gsap.to('.ribbon-shimmer', {
+        xPercent: 250,
+        duration: 3.5,
+        repeat: -1,
+        ease: 'power2.inOut',
+        repeatDelay: 1.2
       });
 
       // Warm ambient pulsing backdrop
@@ -168,16 +193,17 @@ export default function App() {
         ease: 'sine.inOut'
       });
 
-      // Main typography & cards single entrance timeline
+      // Main content smooth cascading entrance timeline
       const tl = gsap.timeline({
         defaults: {
           ease: 'power3.out',
-          duration: 0.85,
+          duration: 0.9,
         }
       });
 
       tl.to('[data-animate="badge"]', { opacity: 1, y: 0, delay: 0.1 })
-        .to('[data-animate="title"]', { opacity: 1, y: 0, duration: 0.95 }, '-=0.5')
+        .to(titleRef.current, { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out' }, '-=0.55')
+        .to('[data-animate="divider"]', { opacity: 1, scaleX: 1, duration: 0.8 }, '-=0.6')
         .to('[data-animate="subtitle"]', { opacity: 1, y: 0 }, '-=0.6')
         .to('[data-animate="ribbon-box"]', { opacity: 1, y: 0, duration: 0.9 }, '-=0.5')
         .to('[data-animate="meta"]', { opacity: 1, y: 0 }, '-=0.5')
@@ -185,27 +211,56 @@ export default function App() {
 
     }, compRef);
 
-    return () => ctx.revert();
+    // Interactive 3D Cursor Parallax on Light Canvas
+    const handleMouseMove = (e) => {
+      if (prefersReducedMotion || !compRef.current) return;
+      const { innerWidth, innerHeight } = window;
+      const xOffset = (e.clientX / innerWidth - 0.5) * 20;
+      const yOffset = (e.clientY / innerHeight - 0.5) * 20;
+
+      gsap.to('.vector-party-popper, .vector-crown', {
+        x: xOffset * 0.8,
+        y: yOffset * 0.8,
+        duration: 1.5,
+        ease: 'power1.out',
+        overwrite: 'auto'
+      });
+
+      gsap.to('.vector-flame, .vector-bell', {
+        x: -xOffset * 0.6,
+        y: -yOffset * 0.6,
+        duration: 1.5,
+        ease: 'power1.out',
+        overwrite: 'auto'
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      ctx.revert();
+    };
   }, []);
 
   const handleCutRibbon = () => {
     if (isCut) return;
     setIsCut(true);
 
-    // Satin ribbon cut opening animation
+    // Satin ribbon cut opening animation with dramatic swing
     gsap.to('.ribbon-left', {
-      xPercent: -125,
-      rotation: -18,
-      opacity: 0.2,
-      duration: 1.2,
+      xPercent: -130,
+      rotation: -22,
+      opacity: 0.15,
+      duration: 1.3,
       ease: 'power3.inOut'
     });
 
     gsap.to('.ribbon-right', {
-      xPercent: 125,
-      rotation: 18,
-      opacity: 0.2,
-      duration: 1.2,
+      xPercent: 130,
+      rotation: 22,
+      opacity: 0.15,
+      duration: 1.3,
       ease: 'power3.inOut'
     });
 
@@ -214,25 +269,31 @@ export default function App() {
       opacity: 0,
       duration: 0.4,
       ease: 'power2.in',
-      onComplete: () => setShowCeremonyDetails(true)
+      onComplete: () => {
+        setShowCeremonyDetails(true);
+        gsap.fromTo('.inauguration-reveal-content', 
+          { opacity: 0, scale: 0.9, y: 15 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: 'back.out(1.5)' }
+        );
+      }
     });
 
-    // Celebratory confetti bursts
+    // Multi-angle celebratory confetti explosions
     const end = Date.now() + 4 * 1000;
     const colors = ['#d97706', '#f59e0b', '#0284c7', '#ec4899', '#8b5cf6', '#10b981'];
 
     (function frame() {
       confetti({
-        particleCount: 7,
+        particleCount: 8,
         angle: 60,
-        spread: 80,
+        spread: 85,
         origin: { x: 0, y: 0.65 },
         colors: colors
       });
       confetti({
-        particleCount: 7,
+        particleCount: 8,
         angle: 120,
-        spread: 80,
+        spread: 85,
         origin: { x: 1, y: 0.65 },
         colors: colors
       });
@@ -243,7 +304,7 @@ export default function App() {
     })();
 
     confetti({
-      particleCount: 150,
+      particleCount: 160,
       spread: 120,
       origin: { y: 0.55 },
       colors: colors
@@ -325,76 +386,93 @@ export default function App() {
       {/* 2. Main Single Screen Content Container */}
       <div className="relative z-10 max-w-4xl w-full mx-auto text-center flex flex-col items-center justify-center py-6 sm:py-8">
         
-        {/* Academic Celebration Badge */}
+        {/* Academic Celebration Badge with Shimmer Sweep */}
         <div 
           data-animate="badge"
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/50 bg-white/90 backdrop-blur-md mb-3 shadow-sm text-amber-900"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/50 bg-white/95 backdrop-blur-md mb-3 shadow-md text-amber-900 shimmer-sweep"
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-          <span className="text-[10px] sm:text-xs font-semibold tracking-[0.22em] uppercase font-mono-tech">
-            Official Journal Inauguration
+          <span className="text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase font-mono-tech">
+            IJSPAST • Official Journal Inauguration
           </span>
         </div>
 
-        {/* ENHANCED PROMINENT LOGO SHOWCASE WITH ATTRACTIVE GSAP ANIMATION */}
+        {/* PROMINENT LOGO SHOWCASE WITH ATTRACTIVE GSAP ANIMATION */}
         <div 
           ref={logoRef}
-          className="relative mb-4 flex flex-col items-center justify-center"
+          className="relative mb-3 flex flex-col items-center justify-center"
         >
-          {/* Subtle Ambient Gold Aura behind Logo */}
           <div className="logo-glow-effect absolute -inset-2 bg-gradient-to-r from-amber-400/20 via-yellow-300/30 to-amber-500/20 rounded-2xl blur-lg pointer-events-none opacity-40" />
 
-          {/* Premium High-Contrast Container ensuring all logo colors & white text are 100% crisp */}
           <div className="relative flex items-center justify-center px-6 py-3 rounded-2xl bg-gradient-to-b from-[#091b38] to-[#050e1f] border-2 border-amber-400/60 shadow-2xl shadow-navy-950/25 transition-transform duration-300 hover:scale-[1.03]">
             <img 
               src="/logo.png" 
-              alt="SRMU - International Journal of Scientific Progress in Applied Science and Technology" 
+              alt="IJSPAST - International Journal of Scientific Progress in Applied Science and Technology" 
               className="h-14 sm:h-18 md:h-20 w-auto max-w-[85vw] sm:max-w-[480px] object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]"
             />
           </div>
         </div>
 
-        {/* Inauguration Ceremony Heading */}
-        <h1 
-          data-animate="title"
-          className="font-serif-academic text-3xl sm:text-5xl md:text-6xl font-semibold tracking-[0.04em] uppercase text-navy-gradient leading-tight mb-2"
-        >
-          Inauguration Ceremony
-        </h1>
+        {/* HIGHLY ATTRACTIVE INAUGURATION CEREMONY HEADLINE */}
+        <div ref={titleRef} className="flex flex-col items-center mb-2">
+          <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold tracking-[0.3em] uppercase text-amber-700 font-mono-tech mb-1">
+            <span>✦</span>
+            <span>Grand Academic Launch</span>
+            <span>✦</span>
+          </div>
+          <h1 className="font-serif-academic text-4xl sm:text-6xl md:text-7xl font-bold tracking-[0.02em] uppercase text-navy-luxury leading-[1.08] drop-shadow-sm">
+            IJSPAST <span className="text-gold-luxury italic font-normal">Inauguration</span> Ceremony
+          </h1>
+        </div>
 
-        {/* Subtitle */}
+        {/* Attractive Editorial Line with Central Diamond */}
+        <div 
+          data-animate="divider"
+          className="flex items-center justify-center gap-3 w-56 sm:w-72 my-2 opacity-90"
+        >
+          <div className="h-[1.5px] flex-1 bg-gradient-to-r from-transparent via-amber-400 to-amber-600" />
+          <div className="w-2 h-2 rotate-45 border-2 border-amber-600 bg-amber-200 shadow-sm" />
+          <div className="h-[1.5px] flex-1 bg-gradient-to-l from-transparent via-amber-400 to-amber-600" />
+        </div>
+
+        {/* Subtitle with Premium Editorial Styling */}
         <p 
           data-animate="subtitle"
-          className="text-sm sm:text-lg md:text-xl font-medium text-slate-700 tracking-wide max-w-2xl mb-5 font-sans"
+          className="text-base sm:text-xl md:text-2xl font-light text-slate-800 tracking-wide max-w-2xl mb-5 font-serif-academic italic"
         >
-          A New Chapter in Scholarly Research
+          "A New Chapter in Scholarly Research & Multidisciplinary Discovery"
         </p>
 
-        {/* Ribbon Cutting (Fita Ceremony) Box in Light Theme */}
+        {/* Ribbon Cutting (Fita Ceremony) Box with Shimmer Line */}
         <div 
           data-animate="ribbon-box"
           className="relative w-full max-w-2xl rounded-2xl bg-white/95 border border-amber-400/50 p-5 sm:p-7 shadow-xl shadow-amber-950/5 backdrop-blur-xl mb-5 overflow-hidden"
         >
           {/* Golden Satin Ribbon */}
-          <div className="relative w-full flex items-center justify-center py-4 my-1">
+          <div className="relative w-full flex items-center justify-center py-4 my-1 overflow-hidden">
+            
+            {/* Shimmer Light Sweeping across Ribbon */}
+            <div className="ribbon-shimmer absolute -left-full top-0 w-1/3 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 z-20 pointer-events-none" />
+
             {/* Left Satin Ribbon */}
             <div className="ribbon-left w-1/2 h-12 bg-gradient-to-r from-amber-600 via-amber-400 to-amber-200 border-t border-b border-amber-100 shadow-md flex items-center justify-end pr-4 text-slate-950 font-bold font-serif-academic text-xs sm:text-sm tracking-widest origin-left">
               <span>OFFICIAL</span>
             </div>
 
-            {/* Central Scissors Trigger Button */}
+            {/* Central Pulsing Scissors Trigger Button */}
             {!isCut ? (
               <button
+                ref={scissorsBtnRef}
                 onClick={handleCutRibbon}
-                className="scissors-trigger absolute z-30 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-slate-900 hover:bg-amber-500 border-2 border-amber-400 text-amber-300 hover:text-slate-950 font-bold text-xs uppercase tracking-wider shadow-[0_0_25px_rgba(217,119,6,0.35)] transition-all duration-300 hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer select-none"
+                className="scissors-trigger absolute z-30 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-slate-900 hover:bg-amber-500 border-2 border-amber-400 text-amber-300 hover:text-slate-950 font-bold text-xs uppercase tracking-wider transition-all duration-300 active:scale-95 flex items-center gap-2 cursor-pointer select-none"
               >
-                <Scissors className="w-4 h-4 text-amber-400 group-hover:text-slate-950" />
+                <Scissors className="w-4 h-4 text-amber-400 group-hover:text-slate-950 animate-bounce" />
                 <span>Cut Ribbon (फिता काटना)</span>
               </button>
             ) : (
               <div className="absolute z-30 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-500 text-emerald-800 flex items-center gap-2 text-xs font-semibold tracking-wider shadow-md">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>Officially Inaugurated</span>
+                <span>IJSPAST Officially Inaugurated</span>
               </div>
             )}
 
@@ -406,14 +484,14 @@ export default function App() {
 
           {/* Action After Ribbon Cut */}
           {showCeremonyDetails ? (
-            <div className="mt-4 pt-3 border-t border-slate-200 flex flex-wrap items-center justify-center gap-3">
+            <div className="inauguration-reveal-content mt-4 pt-3 border-t border-slate-200 flex flex-wrap items-center justify-center gap-3">
               <a
                 href={JOURNAL_INFO.portalUrl || "https://srmu-journal.netlify.app/"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-1.5 shadow-md hover:scale-105"
               >
-                <span>Enter Journal Portal</span>
+                <span>Enter IJSPAST Portal</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
 
@@ -437,13 +515,13 @@ export default function App() {
           data-animate="meta"
           className="flex items-center justify-center mb-5"
         >
-          <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-xl bg-white/90 border border-amber-300/60 shadow-sm backdrop-blur-md">
-            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-700">
+          <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-xl bg-white/95 border border-amber-400/60 shadow-md backdrop-blur-md hover:border-amber-500 transition-colors">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-sm">
               <Calendar className="w-4 h-4" />
             </div>
             <div className="text-left">
-              <span className="block text-[9px] tracking-wider uppercase text-slate-500 font-semibold font-mono-tech">Inauguration Date</span>
-              <span className="font-serif-academic text-xl sm:text-2xl font-bold text-slate-900 tracking-wide">
+              <span className="block text-[9px] tracking-wider uppercase text-amber-800 font-bold font-mono-tech">Inauguration Date</span>
+              <span className="font-serif-academic text-xl sm:text-2xl font-bold text-slate-950 tracking-wide">
                 01 January 2026
               </span>
             </div>
@@ -457,7 +535,7 @@ export default function App() {
         >
           <p className="text-[11px] sm:text-xs text-slate-600 tracking-wider font-medium flex items-center justify-center gap-2">
             <BookOpen className="w-3.5 h-3.5 text-amber-600 inline" />
-            <span>Peer-Reviewed Open Access International Research Journal</span>
+            <span>IJSPAST • International Journal of Scientific Progress in Applied Science and Technology</span>
           </p>
         </div>
 
