@@ -1,6 +1,6 @@
 export const JOURNAL_INFO = {
   name: "IJSPAST",
-  fullName: "International Journal of Scientific Progress in Applied Science and Technology",
+  fullName: "International Journal of Scientific Progress in Applied Science & Technology",
   publisher: "Shri Ramswaroop Memorial University (SRMU)",
   portalUrl: "https://srmu-journal.netlify.app/",
   inauguration: {
