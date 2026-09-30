@@ -42,11 +42,11 @@ export default function Sec03RibbonCutting({ isActive, onRestart }) {
     if (isCut) return;
     setIsCut(true);
 
-    // 1. Cut ribbon animation: left half drops left, right half drops right
+    // 1. Cut ribbon animation
     gsap.to('.ribbon-left', {
       xPercent: -120,
       rotation: -25,
-      opacity: 0.4,
+      opacity: 0.3,
       duration: 1.4,
       ease: 'power3.inOut'
     });
@@ -54,7 +54,7 @@ export default function Sec03RibbonCutting({ isActive, onRestart }) {
     gsap.to('.ribbon-right', {
       xPercent: 120,
       rotation: 25,
-      opacity: 0.4,
+      opacity: 0.3,
       duration: 1.4,
       ease: 'power3.inOut'
     });
@@ -69,21 +69,21 @@ export default function Sec03RibbonCutting({ isActive, onRestart }) {
     });
 
     // 3. Multi-stage Celebration Confetti Explosions
-    const end = Date.now() + 3.5 * 1000;
-    const colors = ['#f59e0b', '#fbbf24', '#3b82f6', '#ffffff', '#e11d48'];
+    const end = Date.now() + 4 * 1000;
+    const colors = ['#f59e0b', '#fbbf24', '#3b82f6', '#0f3b6c', '#e11d48', '#d97706'];
 
     (function frame() {
       confetti({
-        particleCount: 7,
+        particleCount: 8,
         angle: 60,
-        spread: 75,
+        spread: 85,
         origin: { x: 0, y: 0.65 },
         colors: colors
       });
       confetti({
-        particleCount: 7,
+        particleCount: 8,
         angle: 120,
-        spread: 75,
+        spread: 85,
         origin: { x: 1, y: 0.65 },
         colors: colors
       });
@@ -95,8 +95,8 @@ export default function Sec03RibbonCutting({ isActive, onRestart }) {
 
     // Center burst
     confetti({
-      particleCount: 120,
-      spread: 100,
+      particleCount: 150,
+      spread: 120,
       origin: { y: 0.55 },
       colors: colors
     });
@@ -115,31 +115,28 @@ export default function Sec03RibbonCutting({ isActive, onRestart }) {
       ref={containerRef}
       className="w-full h-full flex flex-col items-center justify-center text-center px-4 sm:px-8 max-w-5xl mx-auto relative select-none"
     >
-      {/* Ambient background celebratory glow */}
-      <div className="absolute w-[650px] h-[650px] bg-gradient-to-r from-amber-500/20 via-blue-600/15 to-transparent rounded-full blur-[140px] pointer-events-none" />
-
-      <div className="ribbon-tag inline-flex items-center gap-2 px-4 py-1 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-300 text-xs sm:text-sm uppercase tracking-[0.25em] font-mono-tech mb-4 font-semibold">
-        <Sparkles className="w-4 h-4 text-amber-400" />
+      <div className="ribbon-tag inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-900 text-xs sm:text-sm uppercase tracking-[0.25em] font-mono-tech mb-4 font-bold">
+        <Sparkles className="w-4 h-4 text-amber-600" />
         <span>Grand Inauguration Ceremony</span>
-        <Sparkles className="w-4 h-4 text-amber-400" />
+        <Sparkles className="w-4 h-4 text-amber-600" />
       </div>
 
-      <h2 className="ribbon-title text-3xl sm:text-5xl md:text-6xl font-serif-academic font-medium text-slate-100 tracking-tight leading-tight mb-2">
+      <h2 className="ribbon-title text-3xl sm:text-5xl md:text-6xl font-serif-academic font-medium text-slate-900 tracking-tight leading-tight mb-2">
         Official Ribbon Cutting Ceremony
       </h2>
 
-      <p className="text-xs sm:text-sm font-mono-tech uppercase tracking-[0.2em] text-slate-400 mb-8">
+      <p className="text-xs sm:text-sm font-mono-tech uppercase tracking-[0.2em] text-slate-600 mb-8 font-medium">
         {JOURNAL_INFO.inauguration.date} • {JOURNAL_INFO.publisher}
       </p>
 
-      {/* Main Ribbon Stage Box */}
-      <div className="ribbon-ceremony-box relative w-full max-w-3xl bg-slate-950/80 border border-amber-500/30 rounded-3xl p-8 sm:p-12 shadow-2xl backdrop-blur-2xl flex flex-col items-center justify-center overflow-hidden min-h-[320px]">
+      {/* Main Ribbon Stage Box in Light Celebration Glass */}
+      <div className="ribbon-ceremony-box relative w-full max-w-3xl bg-white/95 border-2 border-amber-400/60 rounded-3xl p-8 sm:p-12 shadow-2xl shadow-amber-500/10 backdrop-blur-2xl flex flex-col items-center justify-center overflow-hidden min-h-[340px]">
         
         {/* The Golden Satin Ribbon */}
         <div className="relative w-full flex items-center justify-center py-6 mb-4">
           
           {/* Left Ribbon Half */}
-          <div className="ribbon-left w-1/2 h-14 bg-gradient-to-r from-amber-600 via-amber-400 to-amber-300 border-t-2 border-b-2 border-amber-200 shadow-xl flex items-center justify-end pr-4 text-slate-950 font-bold font-serif-academic text-xs sm:text-sm tracking-widest origin-left">
+          <div className="ribbon-left w-1/2 h-16 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-300 border-t-2 border-b-2 border-yellow-100 shadow-2xl flex items-center justify-end pr-5 text-slate-950 font-bold font-serif-academic text-sm sm:text-base tracking-widest origin-left">
             <span>OFFICIAL</span>
           </div>
 
@@ -147,20 +144,20 @@ export default function Sec03RibbonCutting({ isActive, onRestart }) {
           {!isCut ? (
             <button
               onClick={handleCutRibbon}
-              className="scissors-btn absolute z-30 px-6 py-3.5 rounded-full bg-slate-900 border-2 border-amber-400 text-amber-300 hover:text-slate-950 hover:bg-amber-400 font-bold text-xs sm:text-sm uppercase font-mono-tech tracking-wider shadow-[0_0_35px_rgba(245,158,11,0.6)] transition-all duration-300 hover:scale-110 active:scale-95 flex items-center gap-2 cursor-pointer"
+              className="scissors-btn absolute z-30 px-7 py-4 rounded-full bg-slate-950 border-2 border-amber-400 text-amber-300 hover:text-slate-950 hover:bg-amber-400 font-bold text-xs sm:text-sm uppercase font-mono-tech tracking-wider shadow-[0_0_40px_rgba(217,119,6,0.5)] transition-all duration-300 hover:scale-110 active:scale-95 flex items-center gap-2 cursor-pointer"
             >
               <Scissors className="w-5 h-5 text-amber-400 group-hover:text-slate-950 animate-bounce" />
               <span>Cut Ribbon to Inaugurate</span>
             </button>
           ) : (
-            <div className="absolute z-30 p-3 rounded-full bg-emerald-500/20 border border-emerald-400 text-emerald-300 animate-pulse flex items-center gap-1.5 text-xs font-mono-tech uppercase tracking-wider">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+            <div className="absolute z-30 p-3.5 rounded-full bg-emerald-100 border-2 border-emerald-500 text-emerald-800 animate-pulse flex items-center gap-2 text-xs sm:text-sm font-mono-tech uppercase tracking-wider font-bold shadow-lg">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
               <span>Inaugurated</span>
             </div>
           )}
 
           {/* Right Ribbon Half */}
-          <div className="ribbon-right w-1/2 h-14 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-600 border-t-2 border-b-2 border-amber-200 shadow-xl flex items-center justify-start pl-4 text-slate-950 font-bold font-serif-academic text-xs sm:text-sm tracking-widest origin-right">
+          <div className="ribbon-right w-1/2 h-16 bg-gradient-to-r from-amber-300 via-amber-500 to-amber-600 border-t-2 border-b-2 border-yellow-100 shadow-2xl flex items-center justify-start pl-5 text-slate-950 font-bold font-serif-academic text-sm sm:text-base tracking-widest origin-right">
             <span>INAUGURATION</span>
           </div>
         </div>
@@ -168,10 +165,10 @@ export default function Sec03RibbonCutting({ isActive, onRestart }) {
         {/* Revealed Celebratory State */}
         {showPortal ? (
           <div className="flex flex-col items-center animate-fadeIn mt-4">
-            <h3 className="text-2xl sm:text-3xl font-serif-academic font-bold text-gradient-gold mb-2">
+            <h3 className="text-2xl sm:text-4xl font-serif-academic font-bold text-gradient-gold mb-2">
               {JOURNAL_INFO.name} is Officially Inaugurated!
             </h3>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-lg mb-6 leading-relaxed">
+            <p className="text-xs sm:text-base text-slate-700 max-w-lg mb-6 leading-relaxed">
               {JOURNAL_INFO.fullName} is now officially open for global multidisciplinary submissions and research dissemination.
             </p>
             
@@ -180,7 +177,7 @@ export default function Sec03RibbonCutting({ isActive, onRestart }) {
                 href={JOURNAL_INFO.portalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-7 py-3 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 transition-all hover:scale-105 inline-flex items-center gap-2"
+                className="px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-xl shadow-amber-500/25 transition-all hover:scale-105 inline-flex items-center gap-2"
               >
                 <span>Enter Main Journal Portal</span>
                 <ArrowUpRight className="w-4 h-4" />
@@ -188,16 +185,16 @@ export default function Sec03RibbonCutting({ isActive, onRestart }) {
 
               <button
                 onClick={handleReset}
-                className="px-5 py-3 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-amber-400 text-slate-300 text-xs font-mono-tech uppercase tracking-wider transition-all inline-flex items-center gap-2 cursor-pointer"
+                className="px-6 py-3.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 text-xs font-mono-tech uppercase tracking-wider transition-all inline-flex items-center gap-2 cursor-pointer"
               >
-                <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
+                <RotateCcw className="w-3.5 h-3.5 text-amber-600" />
                 <span>Replay Ribbon Cutting</span>
               </button>
             </div>
           </div>
         ) : (
-          <p className="text-xs font-mono-tech text-slate-400 tracking-wider">
-            ✦ Click the scissors above to perform the ceremonial ribbon cutting ✦
+          <p className="text-xs font-mono-tech text-slate-500 tracking-wider">
+            ✦ Click the scissors button above to perform the ceremonial ribbon cutting ✦
           </p>
         )}
 
