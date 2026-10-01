@@ -111,12 +111,14 @@ export default function App() {
   const scissorsBtnRef = useRef(null);
   const [isCut, setIsCut] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isCelebrating, setIsCelebrating] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
   const [showCeremonyDetails, setShowCeremonyDetails] = useState(false);
   const [curtainOpen, setCurtainOpen] = useState(false);
   const curtainLeftRef = useRef(null);
   const curtainRightRef = useRef(null);
   const drumIntervalRef = useRef(null);
+  const celebrateTimeoutRef = useRef(null);
 
   // Animated BG element refs
   const orb1Ref = useRef(null);
@@ -386,16 +388,27 @@ export default function App() {
 
     // Immediately part apart dramatically
     curtainTl
+      .to('.medallion-container', {
+        opacity: 0,
+        scale: 0.5,
+        duration: 0.4,
+        ease: 'power2.in'
+      }, 0)
       .to(curtainLeftRef.current, {
         xPercent: -100,
         duration: 1.4,
         ease: 'power3.inOut'
-      }, '+=0.05')
+      }, 0)
       .to(curtainRightRef.current, {
         xPercent: 100,
         duration: 1.4,
         ease: 'power3.inOut'
-      }, '<')
+      }, 0)
+      .to('.curtain-wrapper', {
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power2.inOut'
+      }, 0.8)
       .call(() => setCurtainOpen(true));
   };
 
@@ -471,11 +484,14 @@ export default function App() {
       .call(() => {
         setIsCut(true);
         setIsAnimating(false);
+        setIsCelebrating(true);
         setShowCeremonyDetails(true);
         gsap.fromTo('.portal-reveal-box',
           { opacity: 0, y: 20, scale: 0.9 },
           { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'back.out(1.6)' }
         );
+        if (celebrateTimeoutRef.current) clearTimeout(celebrateTimeoutRef.current);
+        celebrateTimeoutRef.current = setTimeout(() => setIsCelebrating(false), 10000);
       });
 
     // Play subtle high-end celebration audio chime synthesized via Web Audio API (no external file needed)
@@ -606,12 +622,16 @@ export default function App() {
   };
 
   const handleReset = () => {
+    if (celebrateTimeoutRef.current) clearTimeout(celebrateTimeoutRef.current);
     setIsCut(false);
     setIsAnimating(false);
+    setIsCelebrating(false);
     setShowFlash(false);
     setShowCeremonyDetails(false);
     setCurtainOpen(false);
     // Reset curtain panels
+    gsap.set('.curtain-wrapper', { opacity: 1 });
+    gsap.set('.medallion-container', { opacity: 1, scale: 1 });
     gsap.set(curtainLeftRef.current, { xPercent: 0, x: 0 });
     gsap.set(curtainRightRef.current, { xPercent: 0, x: 0 });
     // Reset ribbon and scissors
@@ -629,7 +649,7 @@ export default function App() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.18),_transparent_32%),radial-gradient(circle_at_bottom,_rgba(59,130,246,0.12),_transparent_38%)]" />
       {/* ══ PREMIUM RED VELVET CURTAIN (PARDA) ══ */}
       {!curtainOpen && (
-        <div className="absolute inset-0 z-50 pointer-events-none" aria-hidden="true">
+        <div className="curtain-wrapper absolute inset-0 z-50 pointer-events-none" aria-hidden="true">
 
           {/* ── ORNATE PELMET / VALANCE BAR ── */}
           <div className="absolute top-0 left-0 right-0 z-20" style={{
@@ -759,7 +779,7 @@ export default function App() {
           </div>
 
           {/* ── CENTER GOLDEN SEAL / MEDALLION ── */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center pointer-events-auto" style={{ gap: 0 }}>
+          <div className="medallion-container absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center pointer-events-auto" style={{ gap: 0 }}>
             {/* Rope from pelmet */}
             <div style={{ width: '4px', height: '80px', background: 'linear-gradient(180deg, #f59e0b, #b45309)', borderRadius: '2px', opacity: 0.85 }} />
             {/* Medallion outer ring (Clickable Button) */}
@@ -1114,10 +1134,10 @@ export default function App() {
               </div>
               <div className="flex flex-wrap items-center justify-center gap-2.5">
                 <a
-                  href={JOURNAL_INFO.portalUrl || "https://srmu-journal-new.netlify.app/"}
-                  target="_blank"
+                  href={isCelebrating ? undefined : (JOURNAL_INFO.portalUrl || "https://srmu-journal-new.netlify.app/")}
+                  target={isCelebrating ? undefined : "_blank"}
                   rel="noopener noreferrer"
-                  className="premium-button px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all inline-flex items-center gap-2 shadow-lg shadow-amber-500/30 hover:scale-[1.02]"
+                  className={`premium-button px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all inline-flex items-center gap-2 shadow-lg shadow-amber-500/30 ${isCelebrating ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:from-amber-400 hover:to-amber-500 hover:scale-[1.02]'}`}
                 >
                   <PartyPopper className="w-4 h-4 text-slate-950" />
                   <span>Enter Journal Portal</span>
@@ -1125,8 +1145,9 @@ export default function App() {
                 </a>
 
                 <button
-                  onClick={handleReset}
-                  className="px-4 py-2 rounded-full bg-white hover:bg-slate-50 border-2 border-slate-300 text-slate-700 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-sm hover:border-amber-400"
+                  onClick={isCelebrating ? undefined : handleReset}
+                  disabled={isCelebrating}
+                  className={`px-4 py-2 rounded-full bg-white border-2 border-slate-300 text-slate-700 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all inline-flex items-center gap-1.5 shadow-sm ${isCelebrating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer hover:border-amber-400'}`}
                 >
                   <RotateCcw className="w-3.5 h-3.5 text-amber-600" />
                   <span>Replay Ceremony</span>
